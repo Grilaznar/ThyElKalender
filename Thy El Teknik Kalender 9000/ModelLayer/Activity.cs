@@ -12,7 +12,7 @@ namespace Thy_El_Teknik_Kalender_9000.ModelLayer
   public class Activity
   {
     public enum activityType {
-      None,
+      None = 0,
       Offday,
       Counterbalance,
       Course,

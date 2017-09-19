@@ -60,18 +60,6 @@ namespace Thy_El_Teknik_Kalender_9000.DataLayer
 
       if (File.Exists(path))
       {
-        //List<DataChunk> dataList = ReadFromBinaryFile<List<DataChunk>>(path);
-        //List<DataChunk> dataList = ReadProtoFile(path);
-
-        //int numberOfDays = 0;
-
-        //foreach (DataChunk dataChunk in dataList)
-        //{
-        //  outputList.Add(new Person(dataChunk.Name, dataChunk.Department), MakeUseableList(dataChunk.Activities));
-        //  numberOfDays += dataChunk.Activities.Count;
-        //}
-
-        //Console.WriteLine("Total number of days Loaded: " + numberOfDays);
         outputList = ReadProtoFile(path);
       }
 
@@ -80,14 +68,14 @@ namespace Thy_El_Teknik_Kalender_9000.DataLayer
 
     private static void WriteProtoFile(string path, Dictionary<Person, List<Activity>> data)
     {
-      if (!File.Exists(path))
-      {
-        using (Stream stream = File.Create(path))
-        {
-          Serializer.Serialize(stream, data);
-        }
-      }
-      else
+      //if (!File.Exists(path))
+      //{
+      //  using (Stream stream = File.Create(path))
+      //  {
+      //    Serializer.Serialize(stream, data);
+      //  }
+      //}
+      //else
       {
         using (Stream stream = File.Open(path, FileMode.Create))
         {
@@ -98,7 +86,6 @@ namespace Thy_El_Teknik_Kalender_9000.DataLayer
 
     private static Dictionary<Person, List<Activity>> ReadProtoFile(string path)
     {
-      //List<DataChunk> list = new List<DataChunk>();
       Dictionary<Person, List<Activity>> list = new Dictionary<Person, List<Activity>>(new PersonComparer());
       using (Stream stream = File.OpenRead(path))
       {

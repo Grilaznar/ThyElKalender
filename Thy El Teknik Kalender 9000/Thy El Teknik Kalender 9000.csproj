@@ -151,8 +151,6 @@
     </Compile>
     <Compile Include="DataLayer\ActivityFileHandler.cs" />
     <Compile Include="DataLayer\DBActivity.cs" />
-    <Compile Include="DataLayer\XMLDumpinggrounds.cs" />
-    <Compile Include="EmbeddedAssembly.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="HolidayCalculator.cs" />
     <Compile Include="MainForm.cs">

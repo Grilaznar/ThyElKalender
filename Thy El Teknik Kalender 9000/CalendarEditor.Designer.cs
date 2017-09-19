@@ -28,21 +28,24 @@
     /// </summary>
     private void InitializeComponent()
     {
-      System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+      this.components = new System.ComponentModel.Container();
+      System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
       this.dataGridView1 = new System.Windows.Forms.DataGridView();
+      this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.BackButton = new System.Windows.Forms.Button();
       this.MarkButton = new System.Windows.Forms.Button();
       this.dataGridView2 = new System.Windows.Forms.DataGridView();
       this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
-      this.textBox1 = new System.Windows.Forms.TextBox();
       this.SaveButton = new System.Windows.Forms.Button();
       this.UnmarkButton = new System.Windows.Forms.Button();
       this.Startdate = new System.Windows.Forms.Label();
       this.WeeksToShow = new System.Windows.Forms.Label();
       this.activityPicker = new System.Windows.Forms.ComboBox();
       this.configButton = new System.Windows.Forms.Button();
+      this.weekNumber = new System.Windows.Forms.NumericUpDown();
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.weekNumber)).BeginInit();
       this.SuspendLayout();
       // 
       // dataGridView1
@@ -53,14 +56,15 @@
       this.dataGridView1.AllowUserToResizeRows = false;
       this.dataGridView1.ColumnHeadersHeight = 25;
       this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-      dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-      dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window;
-      dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F);
-      dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
-      dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-      dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-      dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-      this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle3;
+      this.dataGridView1.ContextMenuStrip = this.contextMenuStrip1;
+      dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+      dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+      dataGridViewCellStyle1.Font = new System.Drawing.Font("Arial", 6F);
+      dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+      dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+      dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+      dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+      this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle1;
       this.dataGridView1.Location = new System.Drawing.Point(350, 12);
       this.dataGridView1.Name = "dataGridView1";
       this.dataGridView1.ReadOnly = true;
@@ -71,6 +75,12 @@
       this.dataGridView1.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellDoubleClick);
       this.dataGridView1.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dataGridView1_CellPainting);
       this.dataGridView1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.dataGridView1_Scroll);
+      this.dataGridView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keypressevent);
+      // 
+      // contextMenuStrip1
+      // 
+      this.contextMenuStrip1.Name = "contextMenuStrip1";
+      this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
       // 
       // BackButton
       // 
@@ -78,9 +88,10 @@
       this.BackButton.Name = "BackButton";
       this.BackButton.Size = new System.Drawing.Size(49, 23);
       this.BackButton.TabIndex = 7;
-      this.BackButton.Text = "Back";
+      this.BackButton.Text = "Close";
       this.BackButton.UseVisualStyleBackColor = true;
       this.BackButton.Click += new System.EventHandler(this.CloseWindow);
+      this.BackButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keypressevent);
       // 
       // MarkButton
       // 
@@ -90,7 +101,8 @@
       this.MarkButton.TabIndex = 1;
       this.MarkButton.Text = "Mark";
       this.MarkButton.UseVisualStyleBackColor = true;
-      this.MarkButton.Click += new System.EventHandler(this.MarkSelected);
+      this.MarkButton.Click += new System.EventHandler(this.MarkClicked);
+      this.MarkButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keypressevent);
       // 
       // dataGridView2
       // 
@@ -112,6 +124,7 @@
       this.dataGridView2.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dataGridView2_CellBeginEdit);
       this.dataGridView2.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridView2_RowsAdded);
       this.dataGridView2.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dataGridView2_RowsRemoved);
+      this.dataGridView2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keypressevent);
       // 
       // dateTimePicker1
       // 
@@ -121,18 +134,7 @@
       this.dateTimePicker1.Size = new System.Drawing.Size(80, 20);
       this.dateTimePicker1.TabIndex = 4;
       this.dateTimePicker1.Value = new System.DateTime(2017, 9, 18, 0, 0, 0, 0);
-      this.dateTimePicker1.ValueChanged += new System.EventHandler(this.UpdateCalendarActiveTimespan);
-      // 
-      // textBox1
-      // 
-      this.textBox1.Location = new System.Drawing.Point(94, 135);
-      this.textBox1.Name = "textBox1";
-      this.textBox1.Size = new System.Drawing.Size(47, 20);
-      this.textBox1.TabIndex = 5;
-      this.textBox1.Text = "4";
-      this.textBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-      this.textBox1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox1_KeyPress);
-      this.textBox1.Leave += new System.EventHandler(this.textBox1_Leave);
+      this.dateTimePicker1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keypressevent);
       // 
       // SaveButton
       // 
@@ -143,6 +145,7 @@
       this.SaveButton.Text = "Save";
       this.SaveButton.UseVisualStyleBackColor = true;
       this.SaveButton.Click += new System.EventHandler(this.Save_Click);
+      this.SaveButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keypressevent);
       // 
       // UnmarkButton
       // 
@@ -153,6 +156,7 @@
       this.UnmarkButton.Text = "Unmark";
       this.UnmarkButton.UseVisualStyleBackColor = true;
       this.UnmarkButton.Click += new System.EventHandler(this.UnmarkSelected);
+      this.UnmarkButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keypressevent);
       // 
       // Startdate
       // 
@@ -181,6 +185,7 @@
       this.activityPicker.Size = new System.Drawing.Size(107, 21);
       this.activityPicker.TabIndex = 2;
       this.activityPicker.SelectedIndexChanged += new System.EventHandler(this.SelectedActivity_Changed);
+      this.activityPicker.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keypressevent);
       // 
       // configButton
       // 
@@ -191,19 +196,45 @@
       this.configButton.Text = "Config";
       this.configButton.UseVisualStyleBackColor = true;
       this.configButton.Click += new System.EventHandler(this.ToConfig);
+      this.configButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keypressevent);
+      // 
+      // weekNumber
+      // 
+      this.weekNumber.Location = new System.Drawing.Point(94, 137);
+      this.weekNumber.Maximum = new decimal(new int[] {
+            90,
+            0,
+            0,
+            0});
+      this.weekNumber.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+      this.weekNumber.Name = "weekNumber";
+      this.weekNumber.Size = new System.Drawing.Size(47, 20);
+      this.weekNumber.TabIndex = 11;
+      this.weekNumber.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+      this.weekNumber.Value = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+      this.weekNumber.ValueChanged += new System.EventHandler(this.weekNumber_ValueChanged);
+      this.weekNumber.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keypressevent);
       // 
       // CalendarEditor
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(863, 359);
+      this.Controls.Add(this.weekNumber);
       this.Controls.Add(this.configButton);
       this.Controls.Add(this.activityPicker);
       this.Controls.Add(this.WeeksToShow);
       this.Controls.Add(this.Startdate);
       this.Controls.Add(this.UnmarkButton);
       this.Controls.Add(this.SaveButton);
-      this.Controls.Add(this.textBox1);
       this.Controls.Add(this.dateTimePicker1);
       this.Controls.Add(this.dataGridView2);
       this.Controls.Add(this.MarkButton);
@@ -214,9 +245,11 @@
       this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SaveWindowState);
       this.Load += new System.EventHandler(this.InitDataGrid);
       this.Click += new System.EventHandler(this.DeselectAll);
+      this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keypressevent);
       this.Layout += new System.Windows.Forms.LayoutEventHandler(this.FitDatagrid);
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.weekNumber)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -229,12 +262,13 @@
     private System.Windows.Forms.Button MarkButton;
     private System.Windows.Forms.DataGridView dataGridView2;
     private System.Windows.Forms.DateTimePicker dateTimePicker1;
-    private System.Windows.Forms.TextBox textBox1;
     private System.Windows.Forms.Button UnmarkButton;
     private System.Windows.Forms.Label Startdate;
     private System.Windows.Forms.Label WeeksToShow;
     private System.Windows.Forms.ComboBox activityPicker;
     private System.Windows.Forms.Button SaveButton;
     private System.Windows.Forms.Button configButton;
+    private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+    private System.Windows.Forms.NumericUpDown weekNumber;
   }
 }

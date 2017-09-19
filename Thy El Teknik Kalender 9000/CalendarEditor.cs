@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Reflection;
@@ -26,10 +27,12 @@ namespace Thy_El_Teknik_Kalender_9000
     private Color offdayColor = Color.LightGreen;
     private Color balancedayColor = Color.Green;
     private Color courseColor = Color.Yellow;
-    private Color projectColor = Color.LightGoldenrodYellow;
+    private Color projectColor = Color.Beige;
 
     private Color errorColor = Color.Red;
     private Color unknownColor = Color.Pink;
+
+    private bool unsavedChanges = false;
 
     public CalendarEditor()
     {
@@ -40,8 +43,6 @@ namespace Thy_El_Teknik_Kalender_9000
 
       MaximumSize = Screen.PrimaryScreen.WorkingArea.Size;
       MinimumSize = new Size(440, 250);
-
-      InitInputs();
 
       //SizeChanged += new EventHandler(test);
 
@@ -56,27 +57,6 @@ namespace Thy_El_Teknik_Kalender_9000
     }
 
     #region Init methods
-    private void InitInputs()
-    {
-      Log.Add("Initializing inputs");
-      //Activity comparison test
-      if (new Activity(DateTime.Now.Date, Activity.activityType.Offday) == new Activity(DateTime.Now.Date, Activity.activityType.Offday))
-        Console.WriteLine("THIS HAPPENED");
-
-      //Set earliest day to today, as activetimespan can't handle negatives just yet
-      dateTimePicker1.MinDate = DateTime.Now.Date;
-
-      foreach (Activity.activityType actType in Enum.GetValues(typeof(Activity.activityType)))
-        activityPicker.Items.Add(actType);
-
-      activityPicker.SelectedIndex = 0;
-
-      //Add activity option to dropdown
-      //foreach (Activity.activityType act in Enum.GetValues(typeof(Activity.activityType)))
-      //{
-      //}
-    }
-
     private void InitDataGrid(object sender, EventArgs e)
     {
       Log.Add("Calendar window interior initializing");
@@ -94,17 +74,56 @@ namespace Thy_El_Teknik_Kalender_9000
       dataGridView2.Columns[1].Width = depCellWidth;
       dataGridView2.Columns[1].SortMode = DataGridViewColumnSortMode.NotSortable;
 
-      //filltestdata();
+      InitInputs();
 
-      Log.Add("Setting current time");
-      UpdateCalendarActiveTimespan(this, null);
+      //filltestdata();
 
       Log.Add("Initializing calendargrid");
       CreateDateRow();
 
-      AddDataRows(ActivityFileHandler.ReadData());
-
+      Log.Add("Setting current time");
+      UpdateCalendarActiveTimespan(this, null);
       Log.Add("Calendar window interior initialized");
+
+      //Task<Dictionary<Person, List<Activity>>> t =
+      //  Task<Dictionary<Person, List<Activity>>>.Factory
+      //    .StartNew(ActivityFileHandler.ReadData);
+      //Thread t = new Thread(new ParameterizedThreadStart(ThreadAccessToAddRows));
+      //AddDataRows(ActivityFileHandler.ReadData());
+      AddDataRows(Task<Dictionary<Person, List<Activity>>>.Factory
+          .StartNew(ActivityFileHandler.ReadData).Result);
+
+    }
+
+    private void InitInputs()
+    {
+      Log.Add("Initializing inputs");
+      //Activity comparison test
+      if (new Activity(DateTime.Now.Date, Activity.activityType.Offday) ==
+          new Activity(DateTime.Now.Date, Activity.activityType.Offday))
+        Console.WriteLine("THIS HAPPENED");
+
+      //Set earliest day to today, as activetimespan can't handle negatives just yet
+      dateTimePicker1.MinDate = DateTime.Now.Date;
+      dateTimePicker1.ValueChanged += UpdateCalendarActiveTimespan;
+
+      foreach (Activity.activityType actType in Enum.GetValues(typeof(Activity.activityType)))
+      {
+        if (actType == 0) continue;
+        activityPicker.Items.Add(actType);
+        contextMenuStrip1.Items.Add(actType.ToString(), null, (object s, EventArgs ev) => { MarkSelected(actType); });
+      }
+      activityPicker.SelectedIndex = 0;
+    }
+
+    private void keypressevent(object sender, KeyEventArgs e)
+    {
+      if(e.KeyCode == Keys.S && e.Modifiers == Keys.Control)
+      {
+        Save_Click(this, e);
+        e.Handled = true;
+        Console.WriteLine("Done");
+      }
     }
     #endregion
 
@@ -154,6 +173,7 @@ namespace Thy_El_Teknik_Kalender_9000
     #region Addrows
     private void CreateDateRow()
     {
+      if (dataGridView1.ColumnCount == 0) dataGridView1.ColumnCount = 1;
       dataGridView2.Rows.Add(new string[] { "", "" });
       dataGridView1.Rows.Add();
       dataGridView1.Rows[dataGridView1.Rows.Count - 1].Height = dataGridView2.Rows[0].Height;
@@ -177,10 +197,10 @@ namespace Thy_El_Teknik_Kalender_9000
       UpdateCalendarContent();
     }
 
-    private void AddDataRows(Dictionary<Person, List<Activity>> input)
+    private void AddDataRows(Dictionary<Person, List<Activity>> dataDict)
     {
-      Log.Add("Adding " + input.Count + " people to grid");
-      foreach (KeyValuePair<Person, List<Activity>> pair in input)
+      Log.Add("Adding " + dataDict.Count + " people to grid");
+      foreach (KeyValuePair<Person, List<Activity>> pair in dataDict)
       {
         calendarData.Add(pair.Key, pair.Value);
 
@@ -260,7 +280,7 @@ namespace Thy_El_Teknik_Kalender_9000
       //Font font = dataGridView1.Columns[i].HeaderCell.;
       //dataGridView1.Columns[i].HeaderCell.Style.Font = new Font(font.FontFamily, font.Size - 2);
 
-      int weeksToShow = Convert.ToInt32(textBox1.Text);
+      int weeksToShow = (int)weekNumber.Value;
       int daysToShow = weeksToShow * 7;
       for (int i = 0; i < dataGridView1.ColumnCount; i++)
       {
@@ -305,6 +325,10 @@ namespace Thy_El_Teknik_Kalender_9000
 
           }
         }
+      }
+      if(activeTimeStart <= DateTime.Now && DateTime.Now < activeTimeEnd)
+      {
+        dataGridView1[(DateTime.Now - activeTimeStart).Days, 0].Style.BackColor = Color.LightSkyBlue;
       }
 
       dataGridView1.ClearSelection();
@@ -360,7 +384,7 @@ namespace Thy_El_Teknik_Kalender_9000
       if (backcolor == offdayColor || backcolor == projectColor)
         UnmarkSelected(sender, e);
       else
-        MarkSelected(sender, e);
+        MarkSelected((Activity.activityType)activityPicker.SelectedItem);
     }
 
     private void DeselectAll(object sender, EventArgs e)
@@ -374,7 +398,7 @@ namespace Thy_El_Teknik_Kalender_9000
     #region Button events
     private void CloseWindow(object sender, EventArgs e)
     {
-      if (SaveButton.BackColor != Color.LightBlue ||
+      if (unsavedChanges ||
         MessageBox.Show(
             "You have unsaved changes, are you sure you want to quit?", 
             "Unsaved changes", 
@@ -386,20 +410,21 @@ namespace Thy_El_Teknik_Kalender_9000
       }
     }
 
-    private void MarkSelected(object sender, EventArgs e)
+    private void MarkClicked(object sender, EventArgs e)
+    {
+      MarkSelected((Activity.activityType)activityPicker.SelectedItem);
+    }
+
+    private void MarkSelected(Activity.activityType markType)
     {
       Console.WriteLine(Size.Width);
       foreach (DataGridViewCell cell in dataGridView1.SelectedCells)
       {
-        if (!IsCellMarkable(cell) || activityPicker.SelectedIndex == 0) continue;
+        if (!IsCellMarkable(cell) || markType == 0) continue;
         Log.Add("marking date: " + activeTimeStart.AddDays(cell.ColumnIndex));
 
-        //Fecth selected activity type from dropdown menu
-        int activityType = (int)activityPicker.SelectedItem;
-
         Activity newActivity = new Activity(
-            activeTimeStart.AddDays(cell.ColumnIndex),
-            (Activity.activityType)activityType);
+            activeTimeStart.AddDays(cell.ColumnIndex), markType);
 
         //Find relevant list
         List<Activity> relevantList =
@@ -416,10 +441,8 @@ namespace Thy_El_Teknik_Kalender_9000
           //    (Activity.activityType)activityType));
           relevantList.Add(newActivity);
 
-          cell.Style.BackColor =
-              ActivityColor((Activity.activityType)activityType);
-          cell.Value =
-              ActivityText((Activity.activityType)activityType);
+          cell.Style.BackColor = ActivityColor(markType);
+          cell.Value = ActivityText(markType);
 
           MarkedForSave();
         }
@@ -427,10 +450,8 @@ namespace Thy_El_Teknik_Kalender_9000
         {
           foundActivity.ActivityCode = newActivity.ActivityCode;
 
-          cell.Style.BackColor =
-              ActivityColor((Activity.activityType)activityType);
-          cell.Value =
-              ActivityText((Activity.activityType)activityType);
+          cell.Style.BackColor = ActivityColor(markType);
+          cell.Value = ActivityText(markType);
 
           MarkedForSave();
         }
@@ -457,6 +478,7 @@ namespace Thy_El_Teknik_Kalender_9000
     private void Save_Click(object sender, EventArgs e)
     {
       ActivityFileHandler.SaveData(calendarData);
+      unsavedChanges = false;
       SaveButton.BackColor = BackButton.BackColor;
     }
 
@@ -476,25 +498,15 @@ namespace Thy_El_Teknik_Kalender_9000
       config.Show();
     }
 
-    private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
+    private void weekNumber_ValueChanged(object sender, EventArgs e)
     {
-      if (e.KeyChar == (char)Keys.Return)
-        if (textBox1.Text.Length > 0)
-          UpdateCalendarActiveTimespan(this, e);
-      if (!(Char.IsDigit(e.KeyChar) || (e.KeyChar == (char)Keys.Back)))
-        e.Handled = true;
-    }
-
-    private void textBox1_Leave(object sender, EventArgs e)
-    {
-      if (textBox1.TextLength < 1)
-        textBox1.Text = "1";
-
       UpdateCalendarActiveTimespan(sender, e);
+      Settings.Default.WeeksToShow = (int)weekNumber.Value;
     }
 
     private void MarkedForSave()
     {
+      unsavedChanges = true;
       SaveButton.BackColor = Color.LightBlue;
     }
 
@@ -679,7 +691,7 @@ namespace Thy_El_Teknik_Kalender_9000
           e.PaintBackground(e.CellBounds, true);
           e.Graphics.TranslateTransform(e.CellBounds.Left, e.CellBounds.Top);
           e.Graphics.DrawString(Datetext.Substring(0, 2), e.CellStyle.Font, Brushes.Black, -1, -2);
-          e.Graphics.DrawString(Datetext.Substring(2, 1), e.CellStyle.Font, Brushes.Black, 7, 4);
+          e.Graphics.DrawString("/", e.CellStyle.Font, Brushes.Black, 7, 4);
           e.Graphics.DrawString(Datetext.Substring(3, 2), e.CellStyle.Font, Brushes.Black, 9, 9);
           e.Graphics.ResetTransform();
           e.Handled = true;

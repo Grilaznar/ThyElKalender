@@ -6,13 +6,16 @@
       <Value Profile="(Default)">20, 20</Value>
     </Setting>
     <Setting Name="CalendarSize" Type="System.Drawing.Size" Scope="User">
-      <Value Profile="(Default)">997, 400</Value>
+      <Value Profile="(Default)">980, 400</Value>
     </Setting>
     <Setting Name="Debug" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="CustomSavePath" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="WeeksToShow" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">4</Value>
     </Setting>
   </Settings>
 </SettingsFile>

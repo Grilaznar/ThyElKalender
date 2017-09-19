@@ -37,7 +37,7 @@ namespace Thy_El_Teknik_Kalender_9000.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("997, 400")]
+        [global::System.Configuration.DefaultSettingValueAttribute("980, 400")]
         public global::System.Drawing.Size CalendarSize {
             get {
                 return ((global::System.Drawing.Size)(this["CalendarSize"]));
@@ -68,6 +68,18 @@ namespace Thy_El_Teknik_Kalender_9000.Properties {
             }
             set {
                 this["CustomSavePath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("4")]
+        public int WeeksToShow {
+            get {
+                return ((int)(this["WeeksToShow"]));
+            }
+            set {
+                this["WeeksToShow"] = value;
             }
         }
     }
