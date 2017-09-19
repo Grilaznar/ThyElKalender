@@ -286,7 +286,7 @@ namespace Thy_El_Teknik_Kalender_9000
       {
         for (int j = 0; j < dataGridView1.RowCount; j++)
         {
-          dataGridView1[i, j].Style.BackColor =
+          dataGridView1[i, j].Style.BackColor = //Color.White;
             dataGridView1.Columns[i].DefaultCellStyle.BackColor;
         }
       }
@@ -345,15 +345,24 @@ namespace Thy_El_Teknik_Kalender_9000
         dataGridView1.Columns[i].SortMode =
           DataGridViewColumnSortMode.NotSortable;
 
-        if (IsColumnWeekend(i))
-        {
-          dataGridView1.Columns[i].DefaultCellStyle.BackColor =
-            weekendColor;
-        }
         if (isColumnHoliday(i))
         {
           dataGridView1.Columns[i].DefaultCellStyle.BackColor =
             holidayColor;
+        }
+        else if (IsColumnWeekend(i))
+        {
+          dataGridView1.Columns[i].DefaultCellStyle.BackColor =
+            weekendColor;
+        }
+        else
+        {
+          dataGridView1.Columns[i].DefaultCellStyle.BackColor =
+            SystemColors.Window;
+        }
+        for (int j = 1; j < dataGridView1.RowCount; j++)
+        {
+          dataGridView1[i, j].Value = "";
         }
       }
     }
