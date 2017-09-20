@@ -407,6 +407,11 @@ namespace Thy_El_Teknik_Kalender_9000
     #endregion
 
     #region Button events
+    private void UpdateButton(object sender, EventArgs e)
+    {
+
+    }
+
     private void CloseButton(object sender, EventArgs e)
     {
       CloseWindow(sender, null);

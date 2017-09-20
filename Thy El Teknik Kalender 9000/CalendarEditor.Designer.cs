@@ -43,6 +43,7 @@
       this.activityPicker = new System.Windows.Forms.ComboBox();
       this.configButton = new System.Windows.Forms.Button();
       this.weekNumber = new System.Windows.Forms.NumericUpDown();
+      this.refreshButton = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.weekNumber)).BeginInit();
@@ -189,7 +190,7 @@
       // 
       // configButton
       // 
-      this.configButton.Location = new System.Drawing.Point(9, 194);
+      this.configButton.Location = new System.Drawing.Point(9, 193);
       this.configButton.Name = "configButton";
       this.configButton.Size = new System.Drawing.Size(75, 23);
       this.configButton.TabIndex = 6;
@@ -223,11 +224,21 @@
       this.weekNumber.ValueChanged += new System.EventHandler(this.weekNumber_ValueChanged);
       this.weekNumber.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keypressevent);
       // 
+      // refreshButton
+      // 
+      this.refreshButton.Location = new System.Drawing.Point(66, 283);
+      this.refreshButton.Name = "refreshButton";
+      this.refreshButton.Size = new System.Drawing.Size(75, 23);
+      this.refreshButton.TabIndex = 12;
+      this.refreshButton.Text = "Refresh";
+      this.refreshButton.UseVisualStyleBackColor = true;
+      // 
       // CalendarEditor
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(863, 359);
+      this.Controls.Add(this.refreshButton);
       this.Controls.Add(this.weekNumber);
       this.Controls.Add(this.configButton);
       this.Controls.Add(this.activityPicker);
@@ -270,5 +281,6 @@
     private System.Windows.Forms.Button configButton;
     private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
     private System.Windows.Forms.NumericUpDown weekNumber;
+    private System.Windows.Forms.Button refreshButton;
   }
 }
