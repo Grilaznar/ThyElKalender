@@ -90,7 +90,7 @@
       this.BackButton.TabIndex = 7;
       this.BackButton.Text = "Close";
       this.BackButton.UseVisualStyleBackColor = true;
-      this.BackButton.Click += new System.EventHandler(this.CloseWindow);
+      this.BackButton.Click += new System.EventHandler(this.CloseButton);
       this.BackButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keypressevent);
       // 
       // MarkButton

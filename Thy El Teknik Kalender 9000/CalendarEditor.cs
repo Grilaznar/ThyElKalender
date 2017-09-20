@@ -41,6 +41,8 @@ namespace Thy_El_Teknik_Kalender_9000
 
       Log.ResetLogFile();
 
+      FormClosing += CloseWindow;
+
       MaximumSize = Screen.PrimaryScreen.WorkingArea.Size;
       MinimumSize = new Size(440, 250);
 
@@ -118,7 +120,7 @@ namespace Thy_El_Teknik_Kalender_9000
 
     private void keypressevent(object sender, KeyEventArgs e)
     {
-      if(e.KeyCode == Keys.S && e.Modifiers == Keys.Control)
+      if (e.KeyCode == Keys.S && e.Modifiers == Keys.Control)
       {
         Save_Click(this, e);
         e.Handled = true;
@@ -326,7 +328,7 @@ namespace Thy_El_Teknik_Kalender_9000
           }
         }
       }
-      if(activeTimeStart <= DateTime.Now && DateTime.Now < activeTimeEnd)
+      if (activeTimeStart <= DateTime.Now && DateTime.Now < activeTimeEnd)
       {
         dataGridView1[(DateTime.Now - activeTimeStart).Days, 0].Style.BackColor = Color.LightSkyBlue;
       }
@@ -396,18 +398,36 @@ namespace Thy_El_Teknik_Kalender_9000
     #endregion
 
     #region Button events
-    private void CloseWindow(object sender, EventArgs e)
+    private void CloseButton(object sender, EventArgs e)
     {
-      if (unsavedChanges ||
-        MessageBox.Show(
-            "You have unsaved changes, are you sure you want to quit?", 
-            "Unsaved changes", 
-            MessageBoxButtons.YesNo)
-          == DialogResult.Yes)
+      CloseWindow(sender, null);
+    }
+
+    private void CloseWindow(object sender, FormClosingEventArgs e)
+    {
+      if (unsavedChanges)
       {
-        SaveWindowState(this, null);
-        this.Dispose();
+        DialogResult result = MessageBox.Show(
+            "You have unsaved changes, do you want to save before closing?",
+            "Unsaved changes",
+            MessageBoxButtons.YesNoCancel);
+        if(result == DialogResult.Yes)
+        {
+          ActivityFileHandler.SaveData(calendarData);
+          SaveWindowState(this, null);
+        }
+        else if(result == DialogResult.No)
+        {
+          SaveWindowState(this, null);
+        }
+        else if(result == DialogResult.Cancel)
+        {
+          if (e != null) e.Cancel = true;
+          return;
+        }
       }
+      
+      this.Dispose();
     }
 
     private void MarkClicked(object sender, EventArgs e)

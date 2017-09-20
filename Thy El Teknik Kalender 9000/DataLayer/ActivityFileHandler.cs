@@ -68,19 +68,9 @@ namespace Thy_El_Teknik_Kalender_9000.DataLayer
 
     private static void WriteProtoFile(string path, Dictionary<Person, List<Activity>> data)
     {
-      //if (!File.Exists(path))
-      //{
-      //  using (Stream stream = File.Create(path))
-      //  {
-      //    Serializer.Serialize(stream, data);
-      //  }
-      //}
-      //else
+      using (Stream stream = File.Open(path, FileMode.Create))
       {
-        using (Stream stream = File.Open(path, FileMode.Create))
-        {
-          Serializer.Serialize(stream, data);
-        }
+        Serializer.Serialize(stream, data);
       }
     }
 
