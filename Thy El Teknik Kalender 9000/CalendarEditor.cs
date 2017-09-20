@@ -115,6 +115,8 @@ namespace Thy_El_Teknik_Kalender_9000
         activityPicker.Items.Add(actType);
         contextMenuStrip1.Items.Add(actType.ToString(), null, (object s, EventArgs ev) => { MarkSelected(actType); });
       }
+      contextMenuStrip1.Items.Add("Clear", null, (object s, EventArgs ev) => { UnmarkSelected(this, null); });
+
       activityPicker.SelectedIndex = 0;
     }
 
@@ -249,6 +251,26 @@ namespace Thy_El_Teknik_Kalender_9000
         return true;
       }
       return false;
+    }
+    #endregion
+
+    #region Remove rows
+    private void RemoveRow(int index)
+    {
+      if(index < 1)
+      {
+        calendarData.Remove(new Person(dataGridView2[0, index].Value.ToString()));
+        dataGridView1.Rows.RemoveAt(index);
+        dataGridView2.Rows.RemoveAt(index);
+      }
+    }
+
+    private void ClearDatagrid()
+    {
+      for (int i = dataGridView1.RowCount - 1; i > 1; i--)
+      {
+        dataGridView2.Rows.RemoveAt(i);
+      }
     }
     #endregion
 
@@ -409,7 +431,7 @@ namespace Thy_El_Teknik_Kalender_9000
     #region Button events
     private void UpdateButton(object sender, EventArgs e)
     {
-
+      ClearDatagrid();
     }
 
     private void CloseButton(object sender, EventArgs e)

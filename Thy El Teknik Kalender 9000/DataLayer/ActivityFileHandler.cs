@@ -14,7 +14,7 @@ namespace Thy_El_Teknik_Kalender_9000.DataLayer
   {
     //private static readonly string filePath = "D:\\Martin15\\Arbejds ting\\Thy El-Teknik\\";
     private static readonly string filePath = AppDomain.CurrentDomain.BaseDirectory;
-    private static readonly string fileName = "ThyData.dat";
+    private static readonly string fileName = "ThyData.dta";
 
     public static string userDefinedSavePath = Settings.Default.CustomSavePath.Trim(' ');
 

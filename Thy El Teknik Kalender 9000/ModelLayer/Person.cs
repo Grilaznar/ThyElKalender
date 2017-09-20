@@ -4,16 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ProtoBuf;
+using System.Xml.Serialization;
 
 namespace Thy_El_Teknik_Kalender_9000.ModelLayer
 {
-  [ProtoContract]
+  [XmlType]
+  //[ProtoContract]
   public class Person
   {
     public int ID { get; }
-    [ProtoMember(13)]
+    [XmlElement(Order = 25)]
+    //[ProtoMember(13)]
     public string Name { get; set; }
-    [ProtoMember(14)]
+    [XmlElement(Order = 26)]
+    //[ProtoMember(14)]
     public string Department { get; set; }
 
     public Person()

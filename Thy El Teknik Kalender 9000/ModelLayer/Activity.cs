@@ -5,10 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ProtoBuf;
+using System.Xml.Serialization;
 
 namespace Thy_El_Teknik_Kalender_9000.ModelLayer
 {
-  [ProtoContract]
+  [XmlType]
+  //[ProtoContract]
   public class Activity
   {
     public enum activityType {
@@ -18,11 +20,14 @@ namespace Thy_El_Teknik_Kalender_9000.ModelLayer
       Course,
       Project}
 
-    [ProtoMember(10)]
+    [XmlElement(Order = 20)]
+    //[ProtoMember(10)]
     public DateTime Date { get; set; }
-    [ProtoMember(11)]
+    [XmlElement(Order = 21)]
+    //[ProtoMember(11)]
     public activityType ActivityCode { get; set; }
-    [ProtoMember(12)]
+    [XmlElement(Order = 22)]
+    //[ProtoMember(12)]
     public string Description { get; set; }
 
     public Activity() { }
