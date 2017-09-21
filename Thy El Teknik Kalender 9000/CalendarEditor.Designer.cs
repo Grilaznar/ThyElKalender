@@ -76,7 +76,7 @@
       this.dataGridView1.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellDoubleClick);
       this.dataGridView1.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dataGridView1_CellPainting);
       this.dataGridView1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.dataGridView1_Scroll);
-      this.dataGridView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keypressevent);
+      this.dataGridView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotkeyDetection);
       // 
       // contextMenuStrip1
       // 
@@ -92,7 +92,7 @@
       this.BackButton.Text = "Close";
       this.BackButton.UseVisualStyleBackColor = true;
       this.BackButton.Click += new System.EventHandler(this.CloseButton);
-      this.BackButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keypressevent);
+      this.BackButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotkeyDetection);
       // 
       // MarkButton
       // 
@@ -103,7 +103,7 @@
       this.MarkButton.Text = "Mark";
       this.MarkButton.UseVisualStyleBackColor = true;
       this.MarkButton.Click += new System.EventHandler(this.MarkClicked);
-      this.MarkButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keypressevent);
+      this.MarkButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotkeyDetection);
       // 
       // dataGridView2
       // 
@@ -125,7 +125,7 @@
       this.dataGridView2.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dataGridView2_CellBeginEdit);
       this.dataGridView2.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridView2_RowsAdded);
       this.dataGridView2.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dataGridView2_RowsRemoved);
-      this.dataGridView2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keypressevent);
+      this.dataGridView2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotkeyDetection);
       // 
       // dateTimePicker1
       // 
@@ -135,7 +135,7 @@
       this.dateTimePicker1.Size = new System.Drawing.Size(80, 20);
       this.dateTimePicker1.TabIndex = 4;
       this.dateTimePicker1.Value = new System.DateTime(2017, 9, 18, 0, 0, 0, 0);
-      this.dateTimePicker1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keypressevent);
+      this.dateTimePicker1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotkeyDetection);
       // 
       // SaveButton
       // 
@@ -146,7 +146,7 @@
       this.SaveButton.Text = "Save";
       this.SaveButton.UseVisualStyleBackColor = true;
       this.SaveButton.Click += new System.EventHandler(this.Save_Click);
-      this.SaveButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keypressevent);
+      this.SaveButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotkeyDetection);
       // 
       // UnmarkButton
       // 
@@ -157,7 +157,7 @@
       this.UnmarkButton.Text = "Unmark";
       this.UnmarkButton.UseVisualStyleBackColor = true;
       this.UnmarkButton.Click += new System.EventHandler(this.UnmarkSelected);
-      this.UnmarkButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keypressevent);
+      this.UnmarkButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotkeyDetection);
       // 
       // Startdate
       // 
@@ -186,7 +186,7 @@
       this.activityPicker.Size = new System.Drawing.Size(107, 21);
       this.activityPicker.TabIndex = 2;
       this.activityPicker.SelectedIndexChanged += new System.EventHandler(this.SelectedActivity_Changed);
-      this.activityPicker.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keypressevent);
+      this.activityPicker.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotkeyDetection);
       // 
       // configButton
       // 
@@ -197,7 +197,7 @@
       this.configButton.Text = "Config";
       this.configButton.UseVisualStyleBackColor = true;
       this.configButton.Click += new System.EventHandler(this.ToConfig);
-      this.configButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keypressevent);
+      this.configButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotkeyDetection);
       // 
       // weekNumber
       // 
@@ -222,7 +222,7 @@
             0,
             0});
       this.weekNumber.ValueChanged += new System.EventHandler(this.weekNumber_ValueChanged);
-      this.weekNumber.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keypressevent);
+      this.weekNumber.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotkeyDetection);
       // 
       // refreshButton
       // 
@@ -257,7 +257,7 @@
       this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SaveWindowState);
       this.Load += new System.EventHandler(this.InitDataGrid);
       this.Click += new System.EventHandler(this.DeselectAll);
-      this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.keypressevent);
+      this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotkeyDetection);
       this.Layout += new System.Windows.Forms.LayoutEventHandler(this.FitDatagrid);
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();

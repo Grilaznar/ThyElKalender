@@ -15,6 +15,23 @@ namespace Thy_El_Teknik_Kalender_9000
   /// </summary>
   public static class HolidayCalculator
   {
+    public static List<DateTime> HolidayColumnsInPeriod(DateTime start, DateTime end)
+    {
+      List<DateTime> list = new List<DateTime>();
+      //List<int> years = new List<int>();
+      for (int i = start.Year; i <= end.Year; i++)
+      {
+        DateTime easter = CalculateEasterSunday(i), current;
+        current = easter.AddDays(1);
+      }
+      return null;
+    }
+
+    private void TryAdd(DateTime date, out List<DateTime> list)
+    {
+      if()
+      return null;
+    }
 
     public static bool IsHoliday(DateTime date)
     {
@@ -148,6 +165,7 @@ namespace Thy_El_Teknik_Kalender_9000
       }
       return CalculateEasterSunday(year).AddDays(-3);
     }
+
     /// <summary>
     /// Gets the good friday of the specified <paramref name="year"/>. 
     /// </summary>

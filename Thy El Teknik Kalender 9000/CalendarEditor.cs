@@ -21,12 +21,13 @@ namespace Thy_El_Teknik_Kalender_9000
       new Dictionary<Person, List<Activity>>(new PersonComparer());
     private DateTime activeTimeStart, activeTimeEnd;
     //private ActivityData dataSaver = new ActivityData();
+    private List<int> holidayColumns = new List<int>();
 
     private Color holidayColor = Color.Aquamarine;
     private Color weekendColor = Color.Gray;
     private Color offdayColor = Color.LightGreen;
     private Color balancedayColor = Color.Green;
-    private Color courseColor = Color.Yellow;
+    private Color courseColor = Color.Honeydew;
     private Color projectColor = Color.Beige;
 
     private Color errorColor = Color.Red;
@@ -70,7 +71,7 @@ namespace Thy_El_Teknik_Kalender_9000
       dataGridView2.Columns.Add("Department", "Department");
 
       int nameCellWidth = 118;
-      int depCellWidth = 80;
+      int depCellWidth = 78;
       dataGridView2.Columns[0].Width = nameCellWidth;
       dataGridView2.Columns[0].SortMode = DataGridViewColumnSortMode.NotSortable;
       dataGridView2.Columns[1].Width = depCellWidth;
@@ -120,13 +121,17 @@ namespace Thy_El_Teknik_Kalender_9000
       activityPicker.SelectedIndex = 0;
     }
 
-    private void keypressevent(object sender, KeyEventArgs e)
+    private void HotkeyDetection(object sender, KeyEventArgs e)
     {
       if (e.KeyCode == Keys.S && e.Modifiers == Keys.Control)
       {
         Save_Click(this, e);
         e.Handled = true;
-        Console.WriteLine("Done");
+      }
+      if (e.KeyCode == Keys.R && e.Modifiers == Keys.Control)
+      {
+        UpdateButton(this, e);
+        e.Handled = true;
       }
     }
     #endregion
@@ -257,33 +262,24 @@ namespace Thy_El_Teknik_Kalender_9000
     #region Remove rows
     private void RemoveRow(int index)
     {
-      if(index < 1)
+      if (index < 1)
       {
         calendarData.Remove(new Person(dataGridView2[0, index].Value.ToString()));
-        dataGridView1.Rows.RemoveAt(index);
         dataGridView2.Rows.RemoveAt(index);
       }
     }
 
     private void ClearDatagrid()
     {
-      for (int i = dataGridView1.RowCount - 1; i > 1; i--)
+      while (dataGridView1.RowCount > 1)
       {
-        dataGridView2.Rows.RemoveAt(i);
+        calendarData.Remove(new Person(dataGridView2[0, 1].Value.ToString()));
+        dataGridView2.Rows.RemoveAt(1);
       }
     }
     #endregion
 
     #region CalendarMethods
-    private bool IsColumnWeekend(int columnIndex)
-    {
-      return (columnIndex % 7) > 4;
-    }
-
-    private bool isColumnHoliday(int columnIndex)
-    {
-      return HolidayCalculator.IsHoliday(activeTimeStart.AddDays(columnIndex));
-    }
 
     private void UpdateCalendarActiveTimespan(object sender, EventArgs e)
     {
@@ -300,10 +296,6 @@ namespace Thy_El_Teknik_Kalender_9000
       //Console.WriteLine(startDate);
       //Console.WriteLine(startDate.DayOfWeek);
 
-      //dataGridView1.Columns[i].HeaderText = activeTimeStart.AddDays(i).ToShortDateString().Substring(0, 5);
-      //Font font = dataGridView1.Columns[i].HeaderCell.;
-      //dataGridView1.Columns[i].HeaderCell.Style.Font = new Font(font.FontFamily, font.Size - 2);
-
       int weeksToShow = (int)weekNumber.Value;
       int daysToShow = weeksToShow * 7;
       for (int i = 0; i < dataGridView1.ColumnCount; i++)
@@ -316,6 +308,8 @@ namespace Thy_El_Teknik_Kalender_9000
       }
       dataGridView1.ColumnCount = daysToShow;
       activeTimeEnd = activeTimeStart.AddDays(daysToShow);
+
+      //FindHolidays();
 
       UpdateCalendarContent();
     }
@@ -432,6 +426,7 @@ namespace Thy_El_Teknik_Kalender_9000
     private void UpdateButton(object sender, EventArgs e)
     {
       ClearDatagrid();
+      AddDataRows(ActivityFileHandler.ReadData());
     }
 
     private void CloseButton(object sender, EventArgs e)
@@ -447,22 +442,22 @@ namespace Thy_El_Teknik_Kalender_9000
             "You have unsaved changes, do you want to save before closing?",
             "Unsaved changes",
             MessageBoxButtons.YesNoCancel);
-        if(result == DialogResult.Yes)
+        if (result == DialogResult.Yes)
         {
           ActivityFileHandler.SaveData(calendarData);
           SaveWindowState(this, null);
         }
-        else if(result == DialogResult.No)
+        else if (result == DialogResult.No)
         {
           SaveWindowState(this, null);
         }
-        else if(result == DialogResult.Cancel)
+        else if (result == DialogResult.Cancel)
         {
           if (e != null) e.Cancel = true;
           return;
         }
       }
-      
+
       this.Dispose();
     }
 
@@ -656,9 +651,15 @@ namespace Thy_El_Teknik_Kalender_9000
     private void dataGridView2_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
     {
       FieldInfo field1 = typeof(DataGridView).GetField("EVENT_DATAGRIDVIEWCELLENDEDIT", BindingFlags.Static | BindingFlags.Instance | BindingFlags.NonPublic);
-      field1.SetValue(dataGridView2, null);
-
-      dataGridView1.Rows.RemoveAt(e.RowIndex - 1);
+      object obj =
+        field1.GetValue(dataGridView1);
+      if (e.RowIndex == dataGridView1.RowCount)
+      {
+        field1.SetValue(dataGridView2, null);
+        dataGridView1.Rows.RemoveAt(e.RowIndex - 1);
+      }
+      else
+        dataGridView1.Rows.RemoveAt(e.RowIndex);
     }
 
     private void dataGridView1_Scroll(object sender, ScrollEventArgs e)
@@ -765,6 +766,26 @@ namespace Thy_El_Teknik_Kalender_9000
     #endregion
 
     #region Internal functionality
+    private void FindHolidays()
+    {
+      holidayColumns.Clear();
+      List<DateTime> holidays = HolidayCalculator.HolidayColumnsInPeriod(activeTimeStart, activeTimeEnd);
+      foreach(DateTime date in holidays)
+      {
+        holidayColumns.Add((date - activeTimeStart).Days);
+      }
+    }
+    
+    private bool IsColumnWeekend(int columnIndex)
+    {
+      return (columnIndex % 7) > 4;
+    }
+
+    private bool isColumnHoliday(int columnIndex)
+    {
+      return HolidayCalculator.IsHoliday(activeTimeStart.AddDays(columnIndex));
+      //return holidayColumns.Contains(columnIndex);
+    }
     private void FocusConfig(object sender, EventArgs e, ConfigForm config)
     {
       config.Activate();
