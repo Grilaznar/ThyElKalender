@@ -17,21 +17,86 @@ namespace Thy_El_Teknik_Kalender_9000
   {
     public static List<DateTime> HolidayColumnsInPeriod(DateTime start, DateTime end)
     {
+      bool keepGoing = true;
       List<DateTime> list = new List<DateTime>();
       //List<int> years = new List<int>();
       for (int i = start.Year; i <= end.Year; i++)
       {
-        DateTime easter = CalculateEasterSunday(i), current;
-        current = easter.AddDays(1);
+        DateTime easter = CalculateEasterSunday(i);
+        TryAdd(Nytaardag(i), start, end, ref list, out keepGoing);
+        if (!keepGoing && list.Count > 0) { break; }
+
+        TryAdd(Grundlovsdag(i), start, end, ref list, out keepGoing);
+        //Grundlovsdag flytter sig meget i forhold til påske,
+        //så den checker jeg bare ikke på
+        
+        TryAdd(easter.AddDays(-7), start, end, ref list, out keepGoing);
+        if (!keepGoing && list.Count > 0) { break; }
+        
+        TryAdd(easter.AddDays(-3), start, end, ref list, out keepGoing);
+        if (!keepGoing && list.Count > 0) { break; }
+        
+        TryAdd(easter.AddDays(-2), start, end, ref list, out keepGoing);
+        if (!keepGoing && list.Count > 0) { break; }
+
+        TryAdd(easter, start, end, ref list, out keepGoing);
+        if (!keepGoing && list.Count > 0) { break; }
+        
+        TryAdd(easter.AddDays(1), start, end, ref list, out keepGoing);
+        if (!keepGoing && list.Count > 0) { break; }
+        
+        TryAdd(easter.AddDays(26), start, end, ref list, out keepGoing);
+        if (!keepGoing && list.Count > 0) { break; }
+        
+        TryAdd(easter.AddDays(39), start, end, ref list, out keepGoing);
+        if (!keepGoing && list.Count > 0) { break; }
+        
+        TryAdd(easter.AddDays(49), start, end, ref list, out keepGoing);
+        if (!keepGoing && list.Count > 0) { break; }
+        
+        TryAdd(easter.AddDays(50), start, end, ref list, out keepGoing);
+        if (!keepGoing && list.Count > 0) { break; }
+        
+        TryAdd(Juleaften(i), start, end, ref list, out keepGoing);
+        if (!keepGoing && list.Count > 0) { break; }
+        
+        TryAdd(Juledag(i), start, end, ref list, out keepGoing);
+        if (!keepGoing && list.Count > 0) { break; }
+        
+        TryAdd(AndenJuledag(i), start, end, ref list, out keepGoing);
+        if (!keepGoing && list.Count > 0) { break; }
+        
+        TryAdd(Nytaarsaften(i), start, end, ref list, out keepGoing);
+        if (!keepGoing && list.Count > 0) { break; }
       }
-      return null;
+      return list;
     }
 
-    private void TryAdd(DateTime date, out List<DateTime> list)
+    private static void TryAdd(
+        DateTime toAdd, 
+        DateTime startCheck, 
+        DateTime endCheck, 
+        ref List<DateTime> list, 
+        out bool success)
     {
-      if()
-      return null;
+      if(list == null) { list = new List<DateTime>(); }
+      if(startCheck <= toAdd && toAdd <= endCheck)
+      {
+        list.Add(toAdd);
+        success = true;
+      }
+      else
+      {
+        success = false;
+      }
+      //return list;
     }
+
+    //private void TryAdd(DateTime date, out List<DateTime> list)
+    //{
+    //  if()
+    //  return null;
+    //}
 
     public static bool IsHoliday(DateTime date)
     {

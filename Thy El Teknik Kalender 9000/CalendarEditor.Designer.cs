@@ -31,7 +31,7 @@
       this.components = new System.ComponentModel.Container();
       System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
       this.dataGridView1 = new System.Windows.Forms.DataGridView();
-      this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+      this.calendarContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.BackButton = new System.Windows.Forms.Button();
       this.MarkButton = new System.Windows.Forms.Button();
       this.dataGridView2 = new System.Windows.Forms.DataGridView();
@@ -44,6 +44,8 @@
       this.configButton = new System.Windows.Forms.Button();
       this.weekNumber = new System.Windows.Forms.NumericUpDown();
       this.refreshButton = new System.Windows.Forms.Button();
+      this.updateTimer = new System.Windows.Forms.Timer(this.components);
+      this.personContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.weekNumber)).BeginInit();
@@ -57,7 +59,7 @@
       this.dataGridView1.AllowUserToResizeRows = false;
       this.dataGridView1.ColumnHeadersHeight = 25;
       this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-      this.dataGridView1.ContextMenuStrip = this.contextMenuStrip1;
+      this.dataGridView1.ContextMenuStrip = this.calendarContextMenu;
       dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
       dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
       dataGridViewCellStyle2.Font = new System.Drawing.Font("Arial", 6F);
@@ -78,10 +80,10 @@
       this.dataGridView1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.dataGridView1_Scroll);
       this.dataGridView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotkeyDetection);
       // 
-      // contextMenuStrip1
+      // calendarContextMenu
       // 
-      this.contextMenuStrip1.Name = "contextMenuStrip1";
-      this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
+      this.calendarContextMenu.Name = "contextMenuStrip1";
+      this.calendarContextMenu.Size = new System.Drawing.Size(61, 4);
       // 
       // BackButton
       // 
@@ -113,6 +115,7 @@
       this.dataGridView2.AllowUserToResizeRows = false;
       this.dataGridView2.ColumnHeadersHeight = 25;
       this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+      this.dataGridView2.ContextMenuStrip = this.personContextMenu;
       this.dataGridView2.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
       this.dataGridView2.Location = new System.Drawing.Point(150, 12);
       this.dataGridView2.MultiSelect = false;
@@ -130,7 +133,7 @@
       // dateTimePicker1
       // 
       this.dateTimePicker1.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-      this.dateTimePicker1.Location = new System.Drawing.Point(67, 109);
+      this.dateTimePicker1.Location = new System.Drawing.Point(65, 109);
       this.dateTimePicker1.Name = "dateTimePicker1";
       this.dateTimePicker1.Size = new System.Drawing.Size(80, 20);
       this.dateTimePicker1.TabIndex = 4;
@@ -190,7 +193,7 @@
       // 
       // configButton
       // 
-      this.configButton.Location = new System.Drawing.Point(9, 193);
+      this.configButton.Location = new System.Drawing.Point(8, 190);
       this.configButton.Name = "configButton";
       this.configButton.Size = new System.Drawing.Size(75, 23);
       this.configButton.TabIndex = 6;
@@ -201,7 +204,7 @@
       // 
       // weekNumber
       // 
-      this.weekNumber.Location = new System.Drawing.Point(94, 137);
+      this.weekNumber.Location = new System.Drawing.Point(98, 137);
       this.weekNumber.Maximum = new decimal(new int[] {
             90,
             0,
@@ -226,13 +229,23 @@
       // 
       // refreshButton
       // 
-      this.refreshButton.Location = new System.Drawing.Point(66, 283);
+      this.refreshButton.Location = new System.Drawing.Point(66, 284);
       this.refreshButton.Name = "refreshButton";
       this.refreshButton.Size = new System.Drawing.Size(75, 23);
       this.refreshButton.TabIndex = 12;
       this.refreshButton.Text = "Refresh";
       this.refreshButton.UseVisualStyleBackColor = true;
       this.refreshButton.Click += new System.EventHandler(this.UpdateButton);
+      // 
+      // updateTimer
+      // 
+      this.updateTimer.Interval = 600000;
+      this.updateTimer.Tick += new System.EventHandler(this.UpdateTimerTick);
+      // 
+      // personContextMenu
+      // 
+      this.personContextMenu.Name = "personContextMenu";
+      this.personContextMenu.Size = new System.Drawing.Size(61, 4);
       // 
       // CalendarEditor
       // 
@@ -280,8 +293,10 @@
     private System.Windows.Forms.ComboBox activityPicker;
     private System.Windows.Forms.Button SaveButton;
     private System.Windows.Forms.Button configButton;
-    private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+    private System.Windows.Forms.ContextMenuStrip calendarContextMenu;
     private System.Windows.Forms.NumericUpDown weekNumber;
     private System.Windows.Forms.Button refreshButton;
+    private System.Windows.Forms.Timer updateTimer;
+    private System.Windows.Forms.ContextMenuStrip personContextMenu;
   }
 }
