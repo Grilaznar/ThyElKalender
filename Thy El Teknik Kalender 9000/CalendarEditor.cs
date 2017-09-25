@@ -96,6 +96,7 @@ namespace Thy_El_Teknik_Kalender_9000
       AddDataRows(Task<Dictionary<Person, List<Activity>>>.Factory
           .StartNew(ActivityFileHandler.ReadData).Result);
 
+      dataGridView2.Rows[0].DefaultCellStyle.BackColor = SystemColors.ControlDark;
     }
 
     private void InitInputs()
@@ -120,7 +121,7 @@ namespace Thy_El_Teknik_Kalender_9000
 
       //personContextMenu.Items.Add("Insert", null, (object s, EventArgs ev) => { ; });
       personContextMenu.Items.Add("Delete Selected", null, (object s, EventArgs ev) => { DeleteRowsClick() ; });
-
+      personContextMenu.Items[0].Enabled = false;
 
       activityPicker.SelectedIndex = 0;
     }
@@ -136,6 +137,11 @@ namespace Thy_El_Teknik_Kalender_9000
       {
         UpdateButton(this, e);
         e.Handled = true;
+      }
+      if (!dataGridView2.IsCurrentCellInEditMode)
+      {
+        if(e.KeyCode != Keys.Modifiers)
+        dataGridView2.BeginEdit(false);
       }
     }
     #endregion
@@ -428,7 +434,7 @@ namespace Thy_El_Teknik_Kalender_9000
     {
       foreach (DataGridViewCell cell in dataGridView2.SelectedCells)
       {
-        if(cell.ColumnIndex == 0)
+        if(cell.ColumnIndex == 0 && dataGridView1.RowCount > 1)
           RemoveRow(cell.RowIndex);
       }
     }
@@ -447,6 +453,17 @@ namespace Thy_El_Teknik_Kalender_9000
         UnmarkSelected(sender, e);
       else
         MarkSelected((Activity.activityType)activityPicker.SelectedItem);
+    }
+
+    private void dataGridView2_CellDoubleClick(object sender, EventArgs e)
+    {
+      dataGridView2.BeginEdit(false);
+    }
+
+    private void dataGridView2_KeyPress(object sender, KeyPressEventArgs e)
+    {
+
+      dataGridView2.BeginEdit(false);
     }
 
     private void DeselectAll(object sender, EventArgs e)
@@ -506,16 +523,16 @@ namespace Thy_El_Teknik_Kalender_9000
     private void MarkSelected(Activity.activityType markType)
     {
       Console.WriteLine("started");
-      DateTime start = DateTime.Now;
       foreach (DataGridViewCell cell in dataGridView1.SelectedCells)
       {
+        // If cell is a weekend, holiday or the None option is
+        // somehow chosen, skip
         if (!IsCellMarkable(cell) || markType == 0) continue;
-        //Log.Add("marking date: " + activeTimeStart.AddDays(cell.ColumnIndex));
 
         Activity newActivity = new Activity(
             activeTimeStart.AddDays(cell.ColumnIndex), markType);
 
-        //Find relevant list
+        //Find list of the marked person
         List<Activity> relevantList =
           calendarData[new Person(dataGridView2[0, cell.RowIndex].Value.ToString())];
 
@@ -524,10 +541,6 @@ namespace Thy_El_Teknik_Kalender_9000
         //If entry doesn't exist, add to list
         if (foundActivity == null)
         {
-          //calendarData[new Person(dataGridView2[0, cell.RowIndex].Value.ToString())]
-          //  .Add(new Activity(
-          //    activeTimeStart.AddDays(cell.ColumnIndex),
-          //    (Activity.activityType)activityType));
           relevantList.Add(newActivity);
 
           cell.Style.BackColor = ActivityColor(markType);
@@ -545,8 +558,6 @@ namespace Thy_El_Teknik_Kalender_9000
           MarkedForSave();
         }
       }
-      Console.WriteLine("ended: " + (DateTime.Now - start).TotalMilliseconds);
-      Console.WriteLine("For " + dataGridView1.SelectedCells.Count + " cells");
       dataGridView1.ClearSelection();
     }
 
@@ -637,13 +648,13 @@ namespace Thy_El_Teknik_Kalender_9000
             }
 
             MarkedForSave();
-
-            Console.WriteLine("EY!" + dataGridView2[ev.ColumnIndex, ev.RowIndex].Value.ToString());
+            
             dataGridView2.CellEndEdit -= saveRowChanges;
           }
         };
+        if (!personContextMenu.Items[0].Enabled)
+          personContextMenu.Items[0].Enabled = true;
         dataGridView2.CellEndEdit += saveRowChanges;
-        Console.WriteLine("ya" + dataGridView2[0, e.RowIndex].Value);
       }
     }
 
@@ -659,8 +670,6 @@ namespace Thy_El_Teknik_Kalender_9000
         DataGridViewCellEventHandler saveRowChanges = null;
         saveRowChanges = delegate (object s, DataGridViewCellEventArgs ev)
         {
-          try
-          {
             Person person =
               calendarData.Keys.First(p => p.Name == preName);
             DataGridViewCell cell =
@@ -688,11 +697,6 @@ namespace Thy_El_Teknik_Kalender_9000
 
               MarkedForSave();
             }
-          }
-          catch(InvalidOperationException ex)
-          {
-            Console.WriteLine("You Done goofed: " + ex.Message);
-          }
 
           dataGridView2.CellEndEdit -= saveRowChanges;
         };
@@ -702,6 +706,9 @@ namespace Thy_El_Teknik_Kalender_9000
 
     private void dataGridView2_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
     {
+      if(dataGridView1.RowCount == 2)
+        if (personContextMenu.Items[0].Enabled)
+          personContextMenu.Items[0].Enabled = false;
       FieldInfo field1 = typeof(DataGridView).GetField("EVENT_DATAGRIDVIEWCELLENDEDIT", BindingFlags.Static | BindingFlags.Instance | BindingFlags.NonPublic);
       object obj =
         field1.GetValue(dataGridView1);
@@ -820,7 +827,7 @@ namespace Thy_El_Teknik_Kalender_9000
     #region Internal functionality
     private void UpdateTimerTick(object sender, EventArgs e)
     {
-      if (!unsavedChanges)
+      if (!unsavedChanges && dataGridView1.SelectedCells.Count == 0)
       {
         UpdateButton(sender, e);
       }

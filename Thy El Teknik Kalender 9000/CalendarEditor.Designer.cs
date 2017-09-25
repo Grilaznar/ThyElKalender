@@ -35,6 +35,7 @@
       this.BackButton = new System.Windows.Forms.Button();
       this.MarkButton = new System.Windows.Forms.Button();
       this.dataGridView2 = new System.Windows.Forms.DataGridView();
+      this.personContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
       this.SaveButton = new System.Windows.Forms.Button();
       this.UnmarkButton = new System.Windows.Forms.Button();
@@ -45,7 +46,6 @@
       this.weekNumber = new System.Windows.Forms.NumericUpDown();
       this.refreshButton = new System.Windows.Forms.Button();
       this.updateTimer = new System.Windows.Forms.Timer(this.components);
-      this.personContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.weekNumber)).BeginInit();
@@ -116,7 +116,7 @@
       this.dataGridView2.ColumnHeadersHeight = 25;
       this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
       this.dataGridView2.ContextMenuStrip = this.personContextMenu;
-      this.dataGridView2.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
+      this.dataGridView2.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
       this.dataGridView2.Location = new System.Drawing.Point(150, 12);
       this.dataGridView2.MultiSelect = false;
       this.dataGridView2.Name = "dataGridView2";
@@ -128,7 +128,13 @@
       this.dataGridView2.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dataGridView2_CellBeginEdit);
       this.dataGridView2.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridView2_RowsAdded);
       this.dataGridView2.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dataGridView2_RowsRemoved);
+      this.dataGridView2.DoubleClick += new System.EventHandler(this.dataGridView2_CellDoubleClick);
       this.dataGridView2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotkeyDetection);
+      // 
+      // personContextMenu
+      // 
+      this.personContextMenu.Name = "personContextMenu";
+      this.personContextMenu.Size = new System.Drawing.Size(61, 4);
       // 
       // dateTimePicker1
       // 
@@ -239,13 +245,9 @@
       // 
       // updateTimer
       // 
+      this.updateTimer.Enabled = true;
       this.updateTimer.Interval = 600000;
       this.updateTimer.Tick += new System.EventHandler(this.UpdateTimerTick);
-      // 
-      // personContextMenu
-      // 
-      this.personContextMenu.Name = "personContextMenu";
-      this.personContextMenu.Size = new System.Drawing.Size(61, 4);
       // 
       // CalendarEditor
       // 

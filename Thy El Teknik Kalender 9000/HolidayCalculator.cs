@@ -26,10 +26,11 @@ namespace Thy_El_Teknik_Kalender_9000
         TryAdd(Nytaardag(i), start, end, ref list, out keepGoing);
         if (!keepGoing && list.Count > 0) { break; }
 
+        //Dage der kan være svære at pladsere i forhold til Påske
         TryAdd(Grundlovsdag(i), start, end, ref list, out keepGoing);
-        //Grundlovsdag flytter sig meget i forhold til påske,
-        //så den checker jeg bare ikke på
-        
+        TryAdd(FirstMay(i), start, end, ref list, out keepGoing);
+        TryAdd(Fastelavn(i), start, end, ref list, out keepGoing);
+
         TryAdd(easter.AddDays(-7), start, end, ref list, out keepGoing);
         if (!keepGoing && list.Count > 0) { break; }
         
@@ -108,6 +109,7 @@ namespace Thy_El_Teknik_Kalender_9000
         || date == AndenJuledag(year)
         || date == Nytaarsaften(year)
         || date == Nytaardag(year)
+        || date == FirstMay(year)
         || date == PalmSunday(year)
         || date == MaundyThursday(year)
         || date == GoodFriday(year)
@@ -125,6 +127,18 @@ namespace Thy_El_Teknik_Kalender_9000
 
     #region -- Fixed holidays --
     //Faste danske helligdage
+
+      public static DateTime FirstMay(int year)
+    {
+      if (year > DateTime.MaxValue.Year)
+      {
+        throw new ArgumentException("Invalid year value");
+      }
+
+      int day = 1;
+      int month = 5;
+      return new DateTime(year, month, day);
+    }
 
     public static DateTime Grundlovsdag(int year)
     {
@@ -207,6 +221,15 @@ namespace Thy_El_Teknik_Kalender_9000
     /// <param name="year">The year.</param>
     /// <returns></returns>
     /// <remarks>Sunday before Easter.</remarks>
+    public static DateTime Fastelavn(int year)
+    {
+      if (year > DateTime.MaxValue.Year)
+      {
+        throw new ArgumentException("Invalid year value");
+      }
+      return CalculateEasterSunday(year).AddDays(-(7 * 7));
+    }
+
     public static DateTime PalmSunday(int year)
     {
       if (year > DateTime.MaxValue.Year)

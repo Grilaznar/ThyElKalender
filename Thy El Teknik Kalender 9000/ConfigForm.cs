@@ -33,7 +33,7 @@ namespace Thy_El_Teknik_Kalender_9000
       DialogResult result = folderBrowser.ShowDialog();
       if(result == DialogResult.OK)
       {
-        SavePathBox.Text = folderBrowser.SelectedPath + "\\ThyData.dta";
+        SavePathBox.Text = folderBrowser.SelectedPath;
       }
       Console.WriteLine(result);
       Console.WriteLine(folderBrowser.SelectedPath);
