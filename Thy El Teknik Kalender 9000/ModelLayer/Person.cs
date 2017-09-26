@@ -22,32 +22,32 @@ namespace Thy_El_Teknik_Kalender_9000.ModelLayer
     //[ProtoMember(14)]
     public string Department { get; set; }
     [XmlElement(Order = 27)]
-    public List<Activity> activityList { get; set; }
+    public List<Activity> ActivityList { get; set; }
 
     public Person()
     {
       ID = -1;
-      activityList = new List<Activity>();
+      ActivityList = new List<Activity>();
     }
     public Person(string name)
     {
       Name = name;
       ID = -1;
-      activityList = new List<Activity>();
+      ActivityList = new List<Activity>();
     }
     public Person(string name, string department)
     {
       Name = name;
       Department = department;
       ID = -1;
-      activityList = new List<Activity>();
+      ActivityList = new List<Activity>();
     }
     public Person(int id, string name, string department)
     {
       ID = ID;
       Name = name;
       Department = department;
-      activityList = new List<Activity>();
+      ActivityList = new List<Activity>();
     }
 
     public override string ToString()

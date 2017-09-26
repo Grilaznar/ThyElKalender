@@ -17,10 +17,13 @@ namespace Thy_El_Teknik_Kalender_9000
 {
   public partial class CalendarEditor : Form
   {
+    //private ActivityData dataSaver = new ActivityData();
     private Dictionary<Person, List<Activity>> calendarData =
       new Dictionary<Person, List<Activity>>(new PersonComparer());
+
+    private List<Person> calendarList = new List<Person>();
+
     private DateTime activeTimeStart, activeTimeEnd;
-    //private ActivityData dataSaver = new ActivityData();
     private List<int> holidayColumns = new List<int>();
 
     private Color holidayColor = Color.Aquamarine;
@@ -88,7 +91,7 @@ namespace Thy_El_Teknik_Kalender_9000
       UpdateCalendarActiveTimespan(this, null);
       Log.Add("Calendar window interior initialized");
 
-      AddDataRows(Task<Dictionary<Person, List<Activity>>>.Factory
+      AddDataRows(Task<List<Person>>.Factory
           .StartNew(ActivityFileHandler.ReadData).Result);
 
       dataGridView2.Rows[0].DefaultCellStyle.BackColor = SystemColors.ControlDark;
@@ -122,7 +125,7 @@ namespace Thy_El_Teknik_Kalender_9000
 
       //Person list rightclick options
       //personContextMenu.Items.Add("Add", null, (object s, EventArgs ev) => { ; });
-      //personContextMenu.Items.Add("Insert", null, (object s, EventArgs ev) => { ; });
+      personContextMenu.Items.Add("Insert", null, (object s, EventArgs ev) => { InsertDataRow(); });
       personContextMenu.Items.Add("Delete Selected", null, (object s, EventArgs ev) => { DeleteRowsClick(); });
       personContextMenu.Items[0].Enabled = false;
 
@@ -199,6 +202,25 @@ namespace Thy_El_Teknik_Kalender_9000
     #endregion
 
     #region Add rows
+    private void InsertDataRow()
+    {
+      if (dataGridView2.SelectedCells.Count > 0)
+      {
+        int rowIndex = dataGridView2.SelectedCells[0].RowIndex;
+        dataGridView2.Rows.Insert(rowIndex, new string[] { "", "" });
+        dataGridView1.Rows.Insert(rowIndex);
+        dataGridView1.Rows[rowIndex].Height = dataGridView2.Rows[0].Height;
+        dataGridView1.Rows[rowIndex].DefaultCellStyle.Font = new Font("Ariel", 10);
+
+        calendarList.Insert(rowIndex - 1, new Person("", ""));
+      }
+    }
+
+    private void MoveRow()
+    {
+
+    }
+
     private void CreateDateRow()
     {
       if (dataGridView1.ColumnCount == 0) dataGridView1.ColumnCount = 1;
@@ -209,9 +231,9 @@ namespace Thy_El_Teknik_Kalender_9000
       Log.Add("Date row created");
     }
 
-    private void AddDataRow(Person person, List<Activity> activities)
+    private void AddDataRow(Person person)
     {
-      if (AddPerson(person, activities) != 0)
+      if (AddPerson(person) != 0)
       {
         dataGridView2[0, dataGridView2.Rows.Count - 2].Style.BackColor = errorColor;
       };
@@ -220,57 +242,56 @@ namespace Thy_El_Teknik_Kalender_9000
       dataGridView1.Rows.Add();
       dataGridView1.Rows[dataGridView1.Rows.Count - 1].Height = dataGridView2.Rows[0].Height;
 
-      int numberofDays = activities == null ? 0 : activities.Count;
-      Log.Add("Data row for: " + person.Name + " created, with " + activities.Count + " days marked");
+      int numberofDays = person.ActivityList == null ? 0 : person.ActivityList.Count;
+      Log.Add("Data row for: " + person.Name + " created, with " + person.ActivityList.Count + " days marked");
+      if (!personContextMenu.Items[0].Enabled)
+        personContextMenu.Items[0].Enabled = true;
       UpdateCalendarContent();
     }
 
-    private void AddDataRows(Dictionary<Person, List<Activity>> dataDict)
+    private void AddDataRows(List<Person> dataList)
     {
-      Log.Add("Adding " + dataDict.Count + " people to grid");
-      foreach (KeyValuePair<Person, List<Activity>> pair in dataDict)
+      Log.Add("Adding " + dataList.Count + " people to grid");
+      foreach (Person person in dataList)
       {
-        calendarData.Add(pair.Key, pair.Value);
+        calendarList.Add(person);
 
-        dataGridView2.Rows.Add(new string[] { pair.Key.Name, pair.Key.Department });
+        dataGridView2.Rows.Add(new string[] { person.Name, person.Department });
         dataGridView1.Rows.Add();
         dataGridView1.Rows[dataGridView1.Rows.Count - 1].Height = dataGridView2.Rows[0].Height;
 
-        int numberofDays = pair.Value == null ? 0 : pair.Value.Count;
-        Log.Add("Data row for: " + pair.Key.Name + " created, with " + numberofDays + " days marked");
+        int numberofDays = person.ActivityList == null ? 0 : person.ActivityList.Count;
+        Log.Add("Data row for: " + person.Name + " created, with " + numberofDays + " days marked");
+        if (!personContextMenu.Items[0].Enabled)
+          personContextMenu.Items[0].Enabled = true;
       }
 
       UpdateCalendarContent();
     }
 
-    private int AddPerson(Person person, List<Activity> activities, int retries = 0)
+    private int AddPerson(Person person, int retries = 0)
     {
       if (retries > 10) return -1;
       if (retries > 0)
       {
         person.Name += "-";
       }
-      try
+      if (calendarList.FindIndex(p => p.Name == person.Name) == -1)
       {
-        calendarData.Add(person, activities);
+        calendarList.Add(person);
       }
-      catch (ArgumentException e)
+      else
       {
-        Console.WriteLine(e.Message);
-        return AddPerson(person, activities, retries + 1);
+        return AddPerson(person, retries + 1);
       }
       return retries;
     }
 
-    private bool ChangePersonName(Person person, string name)
+    private bool ChangePersonName(Person person, string newName)
     {
-      if (!calendarData.ContainsKey(new Person(name)))
+      if (!calendarList.Contains(new Person(newName), new PersonComparer()))
       {
-        List<Activity> list = calendarData[person];
-        calendarData.Remove(person);
-        person.Name = name;
-
-        calendarData.Add(person, list);
+        calendarList.Find(p => p.Name == person.Name).Name = newName;
 
         return true;
       }
@@ -285,7 +306,7 @@ namespace Thy_El_Teknik_Kalender_9000
       {
         string name = dataGridView2[0, index].Value.ToString();
         dataGridView2.Rows.RemoveAt(index);
-        calendarData.Remove(new Person(name));
+        calendarList.RemoveAll(p => p.Name == name);
       }
     }
 
@@ -297,8 +318,8 @@ namespace Thy_El_Teknik_Kalender_9000
         if (index[i] > 0)
         {
           string name = dataGridView2[0, index[i]].Value.ToString();
-          dataGridView2.Rows.RemoveAt(index[i]);
-          calendarData.Remove(new Person(name));
+          //dataGridView2.Rows.RemoveAt(index[i]);
+          //calendarData.Remove(new Person(name));
         }
       }
     }
@@ -307,28 +328,22 @@ namespace Thy_El_Teknik_Kalender_9000
     {
       while (dataGridView1.RowCount > 1)
       {
-        calendarData.Remove(new Person(dataGridView2[0, 1].Value.ToString()));
         dataGridView2.Rows.RemoveAt(1);
       }
+      calendarList.Clear();
     }
     #endregion
 
     #region CalendarMethods
-
     private void UpdateCalendarActiveTimespan(object sender, EventArgs e)
     {
       Log.Add("Update active time area");
-      DateTime pickedDate = FetchDateFromTimepicker();
+      DateTime pickedDate = FetchStartDateFromTimepicker();
 
       activeTimeStart =
         pickedDate.AddDays(pickedDate.DayOfWeek == 0 ?
           -6 :
           1 - (double)pickedDate.DayOfWeek);
-
-      Console.WriteLine(activeTimeStart);
-
-      //Console.WriteLine(startDate);
-      //Console.WriteLine(startDate.DayOfWeek);
 
       int weeksToShow = (int)weekNumber.Value;
       int daysToShow = weeksToShow * 7;
@@ -362,8 +377,11 @@ namespace Thy_El_Teknik_Kalender_9000
           continue;
         }
         string name = dataGridView2[0, i].Value.ToString();
-        currentList = calendarData[new Person(name)];
-        if (currentList == null) currentList = calendarData[new Person(name)] = new List<Activity>();
+        Person person = calendarList[i - 1];//.Find(p => p.Name == name);
+
+        if (person.ActivityList == null) currentList = person.ActivityList = new List<Activity>();
+        else currentList = person.ActivityList;
+
         foreach (Activity activity in currentList)
         {
           if (activity.Date < activeTimeEnd && activity.Date >= activeTimeStart)
@@ -458,6 +476,11 @@ namespace Thy_El_Teknik_Kalender_9000
         MarkSelected((Activity.activityType)activityPicker.SelectedItem);
     }
 
+    private void dataGridView2_Click(object sender, EventArgs e)
+    {
+      dataGridView1.ClearSelection();
+    }
+
     private void dataGridView2_CellDoubleClick(object sender, EventArgs e)
     {
       dataGridView2.BeginEdit(false);
@@ -481,7 +504,7 @@ namespace Thy_El_Teknik_Kalender_9000
     private void UpdateButton(object sender, EventArgs e)
     {
       ClearDatagrid();
-      AddDataRows(Task<Dictionary<Person, List<Activity>>>.Factory
+      AddDataRows(Task<List<Person>>.Factory
           .StartNew(ActivityFileHandler.ReadData).Result);
       UnmarkedForSave();
     }
@@ -501,7 +524,7 @@ namespace Thy_El_Teknik_Kalender_9000
             MessageBoxButtons.YesNoCancel);
         if (result == DialogResult.Yes)
         {
-          ActivityFileHandler.SaveData(calendarData);
+          ActivityFileHandler.SaveData(calendarList);
           SaveWindowState(this, null);
         }
         else if (result == DialogResult.No)
@@ -537,7 +560,11 @@ namespace Thy_El_Teknik_Kalender_9000
 
         //Find list of the marked person
         List<Activity> relevantList =
-          calendarData[new Person(dataGridView2[0, cell.RowIndex].Value.ToString())];
+          calendarList[cell.RowIndex - 1]/*
+          .Find(
+            p => p.Name ==
+            dataGridView2[0, cell.RowIndex].Value.ToString())*/
+            .ActivityList;
 
         Activity foundActivity = relevantList.Find(act => act.Date == newActivity.Date);
 
@@ -569,8 +596,15 @@ namespace Thy_El_Teknik_Kalender_9000
       foreach (DataGridViewCell cell in dataGridView1.SelectedCells)
       {
         if (cell.RowIndex == 0) continue;
-        calendarData[new Person(dataGridView2[0, cell.RowIndex].Value.ToString())]
-          .RemoveAll(d => d.Date == activeTimeStart.AddDays(cell.ColumnIndex));
+
+        calendarList[cell.RowIndex - 1]/*.Find(
+          p => p.Name ==
+          dataGridView2[0, cell.RowIndex].Value.ToString())*/
+          .ActivityList
+            .RemoveAll(
+              d => d.Date == 
+              activeTimeStart.AddDays(cell.ColumnIndex));
+
         cell.Style.BackColor =
           cell.OwningColumn.DefaultCellStyle.BackColor;
         cell.Value = "";
@@ -582,12 +616,14 @@ namespace Thy_El_Teknik_Kalender_9000
 
     private void Save_Click(object sender, EventArgs e)
     {
-      ActivityFileHandler.SaveData(calendarData);
+      DeselectGrids(sender, e);
+      ActivityFileHandler.SaveData(calendarList);
       UnmarkedForSave();
     }
 
     private void ToConfig(object sender, EventArgs e)
     {
+      DeselectGrids(sender, e);
       //TODO maybe i should try to find different ways to bookmark
       ConfigForm config = new ConfigForm();
 
@@ -644,7 +680,7 @@ namespace Thy_El_Teknik_Kalender_9000
               new Person(
                 dataGridView2[ev.ColumnIndex, ev.RowIndex].Value.ToString(),
                 "");
-            if (AddPerson(person, new List<Activity>()) != 0)
+            if (AddPerson(person) != 0)
             {
               dataGridView2[ev.ColumnIndex, ev.RowIndex].Value = person.Name;
               dataGridView2[ev.ColumnIndex, ev.RowIndex].Style.BackColor = errorColor;
@@ -655,9 +691,9 @@ namespace Thy_El_Teknik_Kalender_9000
             dataGridView2.CellEndEdit -= saveRowChanges;
           }
         };
+        dataGridView2.CellEndEdit += saveRowChanges;
         if (!personContextMenu.Items[0].Enabled)
           personContextMenu.Items[0].Enabled = true;
-        dataGridView2.CellEndEdit += saveRowChanges;
       }
     }
 
@@ -674,7 +710,7 @@ namespace Thy_El_Teknik_Kalender_9000
         saveRowChanges = delegate (object s, DataGridViewCellEventArgs ev)
         {
           Person person =
-            calendarData.Keys.First(p => p.Name == preName);
+            calendarList[e.RowIndex - 1];//.Find(p => p.Name == preName);
           DataGridViewCell cell =
             dataGridView2[e.ColumnIndex, e.RowIndex];
           if (cell.Value == null) cell.Value = "";
@@ -870,7 +906,7 @@ namespace Thy_El_Teknik_Kalender_9000
       config.Activate();
     }
 
-    private DateTime FetchDateFromTimepicker()
+    private DateTime FetchStartDateFromTimepicker()
     {
       Log.Add("Date fetched from time picker: " + dateTimePicker1.Value);
       return dateTimePicker1.Value.Date;
@@ -923,7 +959,6 @@ namespace Thy_El_Teknik_Kalender_9000
     }
     #endregion
 
-
     #region Test data
     private int weekHeaderWidth(int rowIndex)
     {
@@ -935,6 +970,7 @@ namespace Thy_El_Teknik_Kalender_9000
       return width;
     }
 
+    /*
     private void filltestdata()
     {
 
@@ -991,6 +1027,7 @@ namespace Thy_El_Teknik_Kalender_9000
           new Activity(new DateTime(2017, 9, 21), Activity.activityType.Offday),
           new Activity(new DateTime(2017, 9, 22), Activity.activityType.Offday) });
     }
-  }
+  */
   #endregion
+  }
 }

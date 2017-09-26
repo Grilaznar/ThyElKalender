@@ -18,7 +18,7 @@ namespace Thy_El_Teknik_Kalender_9000.DataLayer
 
     public static string userDefinedSavePath = Settings.Default.CustomSavePath.Trim(' ');
 
-    public static void SaveData(Dictionary<Person, List<Activity>> activityData)
+    public static void SaveData(List<Person> activityData)
     {
       List<DataChunk> data = new List<DataChunk>();
       string path;
@@ -33,10 +33,10 @@ namespace Thy_El_Teknik_Kalender_9000.DataLayer
 
       int numberOfDays = 0;
 
-      foreach (KeyValuePair<Person, List<Activity>> entry in activityData)
+      foreach (Person entry in activityData)
       {
-        data.Add(new DataChunk(entry.Key.Name, entry.Key.Department, entry.Value));
-        numberOfDays += entry.Value.Count;
+        data.Add(new DataChunk(entry.Name, entry.Department, entry.ActivityList));
+        numberOfDays += entry.ActivityList.Count;
       }
 
       Console.WriteLine("Total number of days saved: " + numberOfDays);
@@ -45,9 +45,9 @@ namespace Thy_El_Teknik_Kalender_9000.DataLayer
       WriteProtoFile(path, activityData);
     }
 
-    public static Dictionary<Person, List<Activity>> ReadData()
+    public static List<Person> ReadData()
     {
-      Dictionary<Person, List<Activity>> outputList = new Dictionary<Person, List<Activity>>(new PersonComparer());
+      List<Person> outputList = new List<Person>();
       string path;
       if (userDefinedSavePath != null && userDefinedSavePath.Length > 0)
       {
@@ -66,7 +66,7 @@ namespace Thy_El_Teknik_Kalender_9000.DataLayer
       return outputList;
     }
 
-    private static void WriteProtoFile(string path, Dictionary<Person, List<Activity>> data)
+    private static void WriteProtoFile(string path, List<Person> data)
     {
       using (Stream stream = File.Open(path, FileMode.Create))
       {
@@ -74,12 +74,12 @@ namespace Thy_El_Teknik_Kalender_9000.DataLayer
       }
     }
 
-    private static Dictionary<Person, List<Activity>> ReadProtoFile(string path)
+    private static List<Person> ReadProtoFile(string path)
     {
-      Dictionary<Person, List<Activity>> list = new Dictionary<Person, List<Activity>>(new PersonComparer());
+      List<Person> list = new List<Person>();
       using (Stream stream = File.OpenRead(path))
       {
-        list = Serializer.Deserialize<Dictionary<Person, List<Activity>>>(stream);
+        list = Serializer.Deserialize<List<Person>>(stream);
       }
       return list;
     }
