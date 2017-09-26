@@ -12,34 +12,42 @@ namespace Thy_El_Teknik_Kalender_9000.ModelLayer
   //[ProtoContract]
   public class Person
   {
-    public int ID { get; }
+
+    [XmlElement(Order = 24)]
+    public int ID { get; private set; }
     [XmlElement(Order = 25)]
     //[ProtoMember(13)]
     public string Name { get; set; }
     [XmlElement(Order = 26)]
     //[ProtoMember(14)]
     public string Department { get; set; }
+    [XmlElement(Order = 27)]
+    public List<Activity> activityList { get; set; }
 
     public Person()
     {
       ID = -1;
+      activityList = new List<Activity>();
     }
     public Person(string name)
     {
       Name = name;
       ID = -1;
+      activityList = new List<Activity>();
     }
     public Person(string name, string department)
     {
       Name = name;
       Department = department;
       ID = -1;
+      activityList = new List<Activity>();
     }
     public Person(int id, string name, string department)
     {
       ID = ID;
       Name = name;
       Department = department;
+      activityList = new List<Activity>();
     }
 
     public override string ToString()

@@ -88,11 +88,6 @@ namespace Thy_El_Teknik_Kalender_9000
       UpdateCalendarActiveTimespan(this, null);
       Log.Add("Calendar window interior initialized");
 
-      //Task<Dictionary<Person, List<Activity>>> t =
-      //  Task<Dictionary<Person, List<Activity>>>.Factory
-      //    .StartNew(ActivityFileHandler.ReadData);
-      //Thread t = new Thread(new ParameterizedThreadStart(ThreadAccessToAddRows));
-      //AddDataRows(ActivityFileHandler.ReadData());
       AddDataRows(Task<Dictionary<Person, List<Activity>>>.Factory
           .StartNew(ActivityFileHandler.ReadData).Result);
 
@@ -108,19 +103,27 @@ namespace Thy_El_Teknik_Kalender_9000
         Console.WriteLine("THIS HAPPENED");
 
       //Set earliest day to today, as activetimespan can't handle negatives just yet
+      //(Used as an index somewhere, can't quite recall where)
       dateTimePicker1.MinDate = DateTime.Now.Date;
       dateTimePicker1.ValueChanged += UpdateCalendarActiveTimespan;
 
+      weekNumber.Value = Settings.Default.WeeksToShow;
+
+      // Add activity types to the dropdown- and grid rightclick-menu
       foreach (Activity.activityType actType in Enum.GetValues(typeof(Activity.activityType)))
       {
+        //Don't want to add None, as nothing would happen anyway
         if (actType == 0) continue;
         activityPicker.Items.Add(actType);
         calendarContextMenu.Items.Add(actType.ToString(), null, (object s, EventArgs ev) => { MarkSelected(actType); });
       }
+      // And add the option to Clear the selected area by rightclick
       calendarContextMenu.Items.Add("Clear", null, (object s, EventArgs ev) => { UnmarkSelected(this, null); });
 
+      //Person list rightclick options
+      //personContextMenu.Items.Add("Add", null, (object s, EventArgs ev) => { ; });
       //personContextMenu.Items.Add("Insert", null, (object s, EventArgs ev) => { ; });
-      personContextMenu.Items.Add("Delete Selected", null, (object s, EventArgs ev) => { DeleteRowsClick() ; });
+      personContextMenu.Items.Add("Delete Selected", null, (object s, EventArgs ev) => { DeleteRowsClick(); });
       personContextMenu.Items[0].Enabled = false;
 
       activityPicker.SelectedIndex = 0;
@@ -140,8 +143,8 @@ namespace Thy_El_Teknik_Kalender_9000
       }
       if (!dataGridView2.IsCurrentCellInEditMode)
       {
-        if(e.KeyCode != Keys.Modifiers)
-        dataGridView2.BeginEdit(false);
+        if (!e.Alt && !e.Control && !e.Shift)
+          dataGridView2.BeginEdit(false);
       }
     }
     #endregion
@@ -195,7 +198,7 @@ namespace Thy_El_Teknik_Kalender_9000
     }
     #endregion
 
-    #region Addrows
+    #region Add rows
     private void CreateDateRow()
     {
       if (dataGridView1.ColumnCount == 0) dataGridView1.ColumnCount = 1;
@@ -289,7 +292,7 @@ namespace Thy_El_Teknik_Kalender_9000
     //bliver nok ikke brugt, skal ikke bruges i nuværende stand
     private void RemoveRows(int[] index)
     {
-      for( int i = index.Length - 1; i >= 0; i--)
+      for (int i = index.Length - 1; i >= 0; i--)
       {
         if (index[i] > 0)
         {
@@ -434,7 +437,7 @@ namespace Thy_El_Teknik_Kalender_9000
     {
       foreach (DataGridViewCell cell in dataGridView2.SelectedCells)
       {
-        if(cell.ColumnIndex == 0 && dataGridView1.RowCount > 1)
+        if (cell.ColumnIndex == 0 && dataGridView1.RowCount > 1)
           RemoveRow(cell.RowIndex);
       }
     }
@@ -462,11 +465,11 @@ namespace Thy_El_Teknik_Kalender_9000
 
     private void dataGridView2_KeyPress(object sender, KeyPressEventArgs e)
     {
-
-      dataGridView2.BeginEdit(false);
+      if (e.KeyChar == ' ')
+        dataGridView2.BeginEdit(false);
     }
 
-    private void DeselectAll(object sender, EventArgs e)
+    private void DeselectGrids(object sender, EventArgs e)
     {
       dataGridView1.ClearSelection();
       dataGridView2.ClearSelection();
@@ -601,8 +604,8 @@ namespace Thy_El_Teknik_Kalender_9000
 
     private void weekNumber_ValueChanged(object sender, EventArgs e)
     {
-      UpdateCalendarActiveTimespan(sender, e);
       Settings.Default.WeeksToShow = (int)weekNumber.Value;
+      UpdateCalendarActiveTimespan(sender, e);
     }
 
     private void MarkedForSave()
@@ -648,7 +651,7 @@ namespace Thy_El_Teknik_Kalender_9000
             }
 
             MarkedForSave();
-            
+
             dataGridView2.CellEndEdit -= saveRowChanges;
           }
         };
@@ -670,33 +673,33 @@ namespace Thy_El_Teknik_Kalender_9000
         DataGridViewCellEventHandler saveRowChanges = null;
         saveRowChanges = delegate (object s, DataGridViewCellEventArgs ev)
         {
-            Person person =
-              calendarData.Keys.First(p => p.Name == preName);
-            DataGridViewCell cell =
-              dataGridView2[e.ColumnIndex, e.RowIndex];
-            if (cell.Value == null) cell.Value = "";
-            if (!cell.Value.ToString().Equals(preName))
+          Person person =
+            calendarData.Keys.First(p => p.Name == preName);
+          DataGridViewCell cell =
+            dataGridView2[e.ColumnIndex, e.RowIndex];
+          if (cell.Value == null) cell.Value = "";
+          if (!cell.Value.ToString().Equals(preName))
+          {
+            if (ev.ColumnIndex == 0)
             {
-              if (ev.ColumnIndex == 0)
+              if (!ChangePersonName(person, cell.Value.ToString()))
               {
-                if (!ChangePersonName(person, cell.Value.ToString()))
-                {
-                  cell.Value = person.Name;
-                  cell.Style.BackColor = errorColor;
-                }
-                else
-                {
-                  cell.Style.BackColor =
-                    cell.OwningColumn.DefaultCellStyle.BackColor;
-                }
+                cell.Value = person.Name;
+                cell.Style.BackColor = errorColor;
               }
-              else if (ev.ColumnIndex == 1)
+              else
               {
-                person.Department = cell.Value.ToString();
+                cell.Style.BackColor =
+                  cell.OwningColumn.DefaultCellStyle.BackColor;
               }
-
-              MarkedForSave();
             }
+            else if (ev.ColumnIndex == 1)
+            {
+              person.Department = cell.Value.ToString();
+            }
+
+            MarkedForSave();
+          }
 
           dataGridView2.CellEndEdit -= saveRowChanges;
         };
@@ -706,7 +709,7 @@ namespace Thy_El_Teknik_Kalender_9000
 
     private void dataGridView2_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
     {
-      if(dataGridView1.RowCount == 2)
+      if (dataGridView1.RowCount == 2)
         if (personContextMenu.Items[0].Enabled)
           personContextMenu.Items[0].Enabled = false;
       FieldInfo field1 = typeof(DataGridView).GetField("EVENT_DATAGRIDVIEWCELLENDEDIT", BindingFlags.Static | BindingFlags.Instance | BindingFlags.NonPublic);
@@ -723,6 +726,15 @@ namespace Thy_El_Teknik_Kalender_9000
 
     private void dataGridView1_Scroll(object sender, ScrollEventArgs e)
     {
+      dataGridView2.FirstDisplayedScrollingRowIndex =
+        dataGridView1.FirstDisplayedScrollingRowIndex;
+      dataGridView1.Invalidate();
+    }
+
+    private void dataGridView2_Scroll(object sender, ScrollEventArgs e)
+    {
+      dataGridView1.FirstDisplayedScrollingRowIndex =
+        dataGridView2.FirstDisplayedScrollingRowIndex;
       dataGridView1.Invalidate();
     }
     #endregion
