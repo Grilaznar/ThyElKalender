@@ -100,14 +100,9 @@ namespace Thy_El_Teknik_Kalender_9000
     private void InitInputs()
     {
       Log.Add("Initializing inputs");
-      //Activity comparison test
-      if (new Activity(DateTime.Now.Date, Activity.activityType.Offday) ==
-          new Activity(DateTime.Now.Date, Activity.activityType.Offday))
-        Console.WriteLine("THIS HAPPENED");
 
-      //Set earliest day to today, as activetimespan can't handle negatives just yet
-      //(Used as an index somewhere, can't quite recall where)
-      dateTimePicker1.MinDate = DateTime.Now.Date;
+      //dateTimePicker1.MinDate = DateTime.Now.Date;
+      dateTimePicker1.Value = DateTime.Now.Date;
       dateTimePicker1.ValueChanged += UpdateCalendarActiveTimespan;
 
       weekNumber.Value = Settings.Default.WeeksToShow;
@@ -125,30 +120,13 @@ namespace Thy_El_Teknik_Kalender_9000
 
       //Person list rightclick options
       //personContextMenu.Items.Add("Add", null, (object s, EventArgs ev) => { ; });
+      personContextMenu.Items.Add("Add New", null, (object s, EventArgs ev) => { AddDataRow(new Person("-","")); });
       personContextMenu.Items.Add("Insert", null, (object s, EventArgs ev) => { InsertDataRow(); });
       personContextMenu.Items.Add("Delete Selected", null, (object s, EventArgs ev) => { DeleteRowsClick(); });
-      personContextMenu.Items[0].Enabled = false;
+      personContextMenu.Items[1].Enabled = false;
+      personContextMenu.Items[2].Enabled = false;
 
       activityPicker.SelectedIndex = 0;
-    }
-
-    private void HotkeyDetection(object sender, KeyEventArgs e)
-    {
-      if (e.KeyCode == Keys.S && e.Modifiers == Keys.Control)
-      {
-        Save_Click(this, e);
-        e.Handled = true;
-      }
-      if (e.KeyCode == Keys.R && e.Modifiers == Keys.Control)
-      {
-        UpdateButton(this, e);
-        e.Handled = true;
-      }
-      if (!dataGridView2.IsCurrentCellInEditMode)
-      {
-        if (!e.Alt && !e.Control && !e.Shift)
-          dataGridView2.BeginEdit(false);
-      }
     }
     #endregion
 
@@ -206,13 +184,16 @@ namespace Thy_El_Teknik_Kalender_9000
     {
       if (dataGridView2.SelectedCells.Count > 0)
       {
+        Person person = new Person("-", "");
         int rowIndex = dataGridView2.SelectedCells[0].RowIndex;
-        dataGridView2.Rows.Insert(rowIndex, new string[] { "", "" });
+        dataGridView2.Rows.Insert(rowIndex, new string[] { person.Name, person.Department });
         dataGridView1.Rows.Insert(rowIndex);
         dataGridView1.Rows[rowIndex].Height = dataGridView2.Rows[0].Height;
         dataGridView1.Rows[rowIndex].DefaultCellStyle.Font = new Font("Ariel", 10);
 
-        calendarList.Insert(rowIndex - 1, new Person("", ""));
+        calendarList.Insert(rowIndex - 1, person);
+
+        MarkedForSave();
       }
     }
 
@@ -242,10 +223,10 @@ namespace Thy_El_Teknik_Kalender_9000
       dataGridView1.Rows.Add();
       dataGridView1.Rows[dataGridView1.Rows.Count - 1].Height = dataGridView2.Rows[0].Height;
 
+      MarkedForSave();
+
       int numberofDays = person.ActivityList == null ? 0 : person.ActivityList.Count;
       Log.Add("Data row for: " + person.Name + " created, with " + person.ActivityList.Count + " days marked");
-      if (!personContextMenu.Items[0].Enabled)
-        personContextMenu.Items[0].Enabled = true;
       UpdateCalendarContent();
     }
 
@@ -262,8 +243,6 @@ namespace Thy_El_Teknik_Kalender_9000
 
         int numberofDays = person.ActivityList == null ? 0 : person.ActivityList.Count;
         Log.Add("Data row for: " + person.Name + " created, with " + numberofDays + " days marked");
-        if (!personContextMenu.Items[0].Enabled)
-          personContextMenu.Items[0].Enabled = true;
       }
 
       UpdateCalendarContent();
@@ -486,10 +465,17 @@ namespace Thy_El_Teknik_Kalender_9000
       dataGridView2.BeginEdit(false);
     }
 
-    private void dataGridView2_KeyPress(object sender, KeyPressEventArgs e)
+    private void dataGridView2_KeyDown(object sender, KeyEventArgs e)
     {
-      if (e.KeyChar == ' ')
-        dataGridView2.BeginEdit(false);
+      HotkeyDetection(sender, e);
+      if (!dataGridView2.IsCurrentCellInEditMode)
+      {
+        if (!(e.Alt || e.Control || e.KeyCode == Keys.Shift))
+        {
+          dataGridView2.BeginEdit(false);
+          //dataGridView2.SelectedCells[0].;
+        }
+      }
     }
 
     private void DeselectGrids(object sender, EventArgs e)
@@ -667,7 +653,7 @@ namespace Thy_El_Teknik_Kalender_9000
     #region Datagrid events
     private void dataGridView2_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
     {
-      if (dataGridView2.ContainsFocus)
+      if (dataGridView2.ContainsFocus && e.RowIndex == e.RowCount - 1)
       {
         dataGridView1.Rows.Add();
 
@@ -692,8 +678,27 @@ namespace Thy_El_Teknik_Kalender_9000
           }
         };
         dataGridView2.CellEndEdit += saveRowChanges;
-        if (!personContextMenu.Items[0].Enabled)
-          personContextMenu.Items[0].Enabled = true;
+      }
+    }
+
+    private void dataGridView2_SelectionChanged(object sender, EventArgs e)
+    {
+      if(dataGridView2.SelectedCells.Count > 0)
+      {
+        foreach (DataGridViewCell cell in dataGridView2.SelectedCells)
+        {
+          if (cell.RowIndex > 0)
+          {
+            personContextMenu.Items[1].Enabled = true;
+            personContextMenu.Items[2].Enabled = true;
+            break;
+          }
+        }
+      }
+      else
+      {
+        personContextMenu.Items[1].Enabled = true;
+        personContextMenu.Items[2].Enabled = false;
       }
     }
 
@@ -745,9 +750,6 @@ namespace Thy_El_Teknik_Kalender_9000
 
     private void dataGridView2_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
     {
-      if (dataGridView1.RowCount == 2)
-        if (personContextMenu.Items[0].Enabled)
-          personContextMenu.Items[0].Enabled = false;
       FieldInfo field1 = typeof(DataGridView).GetField("EVENT_DATAGRIDVIEWCELLENDEDIT", BindingFlags.Static | BindingFlags.Instance | BindingFlags.NonPublic);
       object obj =
         field1.GetValue(dataGridView1);
@@ -949,6 +951,20 @@ namespace Thy_El_Teknik_Kalender_9000
         default:
           Log.Add("Found unknown color: " + activityCode);
           return unknownColor;
+      }
+    }
+
+    private void HotkeyDetection(object sender, KeyEventArgs e)
+    {
+      if (e.KeyData == (Keys.S | Keys.Control))
+      {
+        Save_Click(this, e);
+        e.Handled = true;
+      }
+      if (e.KeyData == (Keys.R | Keys.Control))
+      {
+        UpdateButton(this, e);
+        e.Handled = true;
       }
     }
 
