@@ -150,7 +150,6 @@
       <DependentUpon>ConfigForm.cs</DependentUpon>
     </Compile>
     <Compile Include="DataLayer\ActivityFileHandler.cs" />
-    <Compile Include="DataLayer\DBActivity.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="HolidayCalculator.cs" />
     <Compile Include="MainForm.cs">

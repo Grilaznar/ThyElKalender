@@ -120,11 +120,17 @@ namespace Thy_El_Teknik_Kalender_9000
 
       //Person list rightclick options
       //personContextMenu.Items.Add("Add", null, (object s, EventArgs ev) => { ; });
-      personContextMenu.Items.Add("Add New", null, (object s, EventArgs ev) => { AddDataRow(new Person("-","")); });
-      personContextMenu.Items.Add("Insert", null, (object s, EventArgs ev) => { InsertDataRow(); });
-      personContextMenu.Items.Add("Delete Selected", null, (object s, EventArgs ev) => { DeleteRowsClick(); });
-      personContextMenu.Items[1].Enabled = false;
-      personContextMenu.Items[2].Enabled = false;
+      personContextMenu.Items
+        .Add("Move", null, (object s, EventArgs ev) => { StartRowMovement(); }).Name = "Move";
+      personContextMenu.Items
+        .Add("Add New", null, (object s, EventArgs ev) => { AddDataRow(new Person("-","")); }).Name = "Add";
+      personContextMenu.Items
+        .Add("Insert New", null, (object s, EventArgs ev) => { InsertDataRow(); }).Name = "Insert";
+      personContextMenu.Items
+        .Add("Delete Selected", null, (object s, EventArgs ev) => { DeleteRowsClick(); }).Name = "Delete";
+
+      personContextMenu.Items.Find("Insert", false)[0].Enabled = false;
+      personContextMenu.Items.Find("Delete", false)[0].Enabled = false;
 
       activityPicker.SelectedIndex = 0;
     }
@@ -189,17 +195,95 @@ namespace Thy_El_Teknik_Kalender_9000
         dataGridView2.Rows.Insert(rowIndex, new string[] { person.Name, person.Department });
         dataGridView1.Rows.Insert(rowIndex);
         dataGridView1.Rows[rowIndex].Height = dataGridView2.Rows[0].Height;
-        dataGridView1.Rows[rowIndex].DefaultCellStyle.Font = new Font("Ariel", 10);
+        //dataGridView1.Rows[rowIndex].DefaultCellStyle.Font = new Font("Ariel", 10);
 
         calendarList.Insert(rowIndex - 1, person);
 
         MarkedForSave();
       }
     }
-
-    private void MoveRow()
+    private void InsertDataRow(int rowIndex, Person person)
     {
+        dataGridView2.Rows.Insert(rowIndex, new string[] { person.Name, person.Department });
+        dataGridView1.Rows.Insert(rowIndex);
+        dataGridView1.Rows[rowIndex].Height = dataGridView2.Rows[0].Height;
+        //dataGridView1.Rows[rowIndex].DefaultCellStyle.Font = new Font("Ariel", 10);
 
+        calendarList.Insert(rowIndex - 1, person);
+
+        MarkedForSave();
+    }
+
+    private void StartRowMovement()
+    {
+      if (dataGridView2.SelectedCells.Count > 0)
+      {
+        DataGridViewCell selectedCell = dataGridView2.SelectedCells[0];
+
+        foreach(DataGridViewRow row in dataGridView2.Rows)
+        {
+          if(row.Index != selectedCell.RowIndex)
+          {
+            row.Cells[0].Style.BackColor = Color.LawnGreen;
+          }
+        }
+
+        DataGridViewCellEventHandler clickOnTarget = null;
+        EventHandler cancelClickEvent = null;
+
+        clickOnTarget = delegate (object sedner, DataGridViewCellEventArgs e)
+        {
+          if (e.RowIndex != selectedCell.RowIndex)
+          {
+            MoveRow(selectedCell.RowIndex, e.RowIndex);
+
+            //color white/Control
+            foreach (DataGridViewRow row in dataGridView2.Rows)
+            {
+              row.Cells[0].Style.BackColor = SystemColors.Control;
+            }
+
+            //delete this thing
+            dataGridView2.CellClick -= clickOnTarget;
+            dataGridView2.LostFocus -= cancelClickEvent;
+
+            //find cancel options
+            UpdateCalendarContent();
+          }
+        };
+
+        dataGridView2.CellClick += clickOnTarget;
+
+        cancelClickEvent = delegate (object sender, EventArgs e)
+        {
+          foreach (DataGridViewRow row in dataGridView2.Rows)
+          {
+            row.Cells[0].Style.BackColor = SystemColors.Control;
+          }
+          dataGridView2.CellClick -= clickOnTarget;
+          dataGridView2.LostFocus -= cancelClickEvent;
+        };
+        dataGridView2.LostFocus += cancelClickEvent;
+      }
+    }
+
+    private void TargetRowMovement()
+    {
+      MoveRow(0, 0);
+    }
+
+    private void MoveRow(int movingRowIndex, int arrivalRowIndex)
+    {
+      if (dataGridView2.SelectedCells.Count > 0)
+      {
+        Person person = calendarList[movingRowIndex - 1];
+        calendarList.RemoveAt(movingRowIndex - 1);
+        dataGridView2.Rows.RemoveAt(movingRowIndex);
+
+        if (movingRowIndex > arrivalRowIndex) arrivalRowIndex--;
+
+        InsertDataRow(arrivalRowIndex, person);
+      }
     }
 
     private void CreateDateRow()
@@ -208,7 +292,7 @@ namespace Thy_El_Teknik_Kalender_9000
       dataGridView2.Rows.Add(new string[] { "", "" });
       dataGridView1.Rows.Add();
       dataGridView1.Rows[dataGridView1.Rows.Count - 1].Height = dataGridView2.Rows[0].Height;
-      dataGridView1.Rows[dataGridView1.Rows.Count - 1].DefaultCellStyle.Font = new Font("Ariel", 10);
+      //dataGridView1.Rows[dataGridView1.Rows.Count - 1].DefaultCellStyle.Font = new Font("Ariel", 10);
       Log.Add("Date row created");
     }
 
@@ -689,16 +773,16 @@ namespace Thy_El_Teknik_Kalender_9000
         {
           if (cell.RowIndex > 0)
           {
-            personContextMenu.Items[1].Enabled = true;
-            personContextMenu.Items[2].Enabled = true;
+            personContextMenu.Items.Find("Insert", false)[0].Enabled = false;
+            personContextMenu.Items.Find("Delete", false)[0].Enabled = false;
             break;
           }
         }
       }
       else
       {
-        personContextMenu.Items[1].Enabled = true;
-        personContextMenu.Items[2].Enabled = false;
+        personContextMenu.Items.Find("Insert", false)[0].Enabled = false;
+        personContextMenu.Items.Find("Delete", false)[0].Enabled = false;
       }
     }
 
@@ -928,7 +1012,7 @@ namespace Thy_El_Teknik_Kalender_9000
           return "KRS";
 
         default:
-          return "";
+          return "PRJ";
       }
     }
 
@@ -974,6 +1058,16 @@ namespace Thy_El_Teknik_Kalender_9000
       //return !(cell.RowIndex < 1 || (string)cell.OwningColumn.Tag == "Weekend" || (string)cell.OwningColumn.Tag == "Holiday");
     }
     #endregion
+
+    public class ContextMenukEventArgs : EventArgs
+    {
+      public int ClickedRowIndex { get; private set; }
+
+      public ContextMenukEventArgs(int clickedRowIndex)
+      {
+        ClickedRowIndex = clickedRowIndex;
+      }
+    }
 
     #region Test data
     private int weekHeaderWidth(int rowIndex)
