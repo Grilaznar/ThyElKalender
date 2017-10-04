@@ -799,7 +799,7 @@ namespace Thy_El_Teknik_Kalender_9000
           {
             if (ev.ColumnIndex == 0)
             {
-              if (!ChangePersonName(person, cell.Value.ToString()))
+              if (!ChangePersonName(ev.RowIndex - 1, cell.Value.ToString()))
               {
                 cell.Value = person.Name;
                 cell.Style.BackColor = errorColor;
@@ -954,6 +954,7 @@ namespace Thy_El_Teknik_Kalender_9000
     #region Internal functionality
     private int AddPerson(Person person, int retries = 0)
     {
+      if (person.Name == ".") calendarList.Add(person);
       if (retries > 10) return -1;
       if (retries > 0)
       {
@@ -969,13 +970,13 @@ namespace Thy_El_Teknik_Kalender_9000
       }
       return retries;
     }
-
-    private bool ChangePersonName(Person person, string newName)
+    
+    private bool ChangePersonName(int index, string newName)
     {
-      if (!calendarList.Contains(new Person(newName), new PersonComparer()))
+      int existingIndex = calendarList.FindIndex(p => p.Name == newName);
+      if (newName == "." ||  existingIndex != index || existingIndex == -1)
       {
-        calendarList.Find(p => p.Name == person.Name).Name = newName;
-
+        calendarList[index].Name = newName;
         return true;
       }
       return false;
@@ -1087,6 +1088,18 @@ namespace Thy_El_Teknik_Kalender_9000
 
     #region Not Active
     /*
+    
+    private bool ChangePersonName(Person person, string newName)
+    {
+      if (!calendarList.Contains(new Person(newName), new PersonComparer()))
+      {
+        calendarList.Find(p => p.Name == person.Name).Name = newName;
+
+        return true;
+      }
+      return false;
+    }
+
     public class ContextMenukEventArgs : EventArgs
     {
       public int ClickedRowIndex { get; private set; }
