@@ -197,7 +197,6 @@
       this.activityPicker.Name = "activityPicker";
       this.activityPicker.Size = new System.Drawing.Size(107, 21);
       this.activityPicker.TabIndex = 2;
-      this.activityPicker.SelectedIndexChanged += new System.EventHandler(this.SelectedActivity_Changed);
       this.activityPicker.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotkeyDetection);
       // 
       // configButton

@@ -12,7 +12,6 @@ namespace Thy_El_Teknik_Kalender_9000.DataLayer
 {
   public static class ActivityFileHandler
   {
-    //private static readonly string filePath = "D:\\Martin15\\Arbejds ting\\Thy El-Teknik\\";
     private static readonly string filePath = AppDomain.CurrentDomain.BaseDirectory;
     private static readonly string fileName = "ThyData.dta";
 
@@ -22,16 +21,16 @@ namespace Thy_El_Teknik_Kalender_9000.DataLayer
     {
       get
       {
-        if (userDefinedSavePath != null || userDefinedSavePath != "")
-          return userDefinedSavePath + fileName;
-        else { return filePath + fileName; }
+        if (userDefinedSavePath != null && userDefinedSavePath != "")
+          return userDefinedSavePath;
+        else { return filePath ; }
       }
     }
 
     public static void SaveData(List<Person> activityData)
     {
       List<DataChunk> data = new List<DataChunk>();
-      string path = CurrentSavePath;
+      string path = CurrentSavePath + fileName;
 
       int numberOfDays = 0;
 
@@ -50,7 +49,7 @@ namespace Thy_El_Teknik_Kalender_9000.DataLayer
     public static List<Person> ReadData()
     {
       List<Person> outputList = new List<Person>();
-      string path = CurrentSavePath;
+      string path = CurrentSavePath + fileName;
 
       if (File.Exists(path))
       {
