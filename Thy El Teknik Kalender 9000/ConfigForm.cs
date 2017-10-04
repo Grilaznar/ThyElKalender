@@ -16,27 +16,28 @@ namespace Thy_El_Teknik_Kalender_9000
     {
       InitializeComponent();
 
-      SavePathBox.Text = Settings.Default.CustomSavePath;
+      SavePathBox.Text = DataLayer.ActivityFileHandler.CurrentSavePath;
       debugCheck.Checked = Settings.Default.Debug;
-    }
-
-    private void OkButton_Click(object sender, EventArgs e)
-    {
-      Settings.Default.CustomSavePath = SavePathBox.Text;
-      Settings.Default.Debug = debugCheck.Checked;
-      Settings.Default.Save();
-      this.Dispose();
     }
 
     private void BrowseButton_Click(object sender, EventArgs e)
     {
       DialogResult result = folderBrowser.ShowDialog();
-      if(result == DialogResult.OK)
+      if (result == DialogResult.OK)
       {
         SavePathBox.Text = folderBrowser.SelectedPath;
       }
       Console.WriteLine(result);
       Console.WriteLine(folderBrowser.SelectedPath);
+    }
+
+    private void OkButton_Click(object sender, EventArgs e)
+    {
+      if (SavePathBox.Text != DataLayer.ActivityFileHandler.CurrentSavePath
+        && SavePathBox.Text != "")
+        Settings.Default.CustomSavePath = SavePathBox.Text;
+      Settings.Default.Debug = debugCheck.Checked;
+      this.Dispose();
     }
 
     private void BackButton_Click(object sender, EventArgs e)

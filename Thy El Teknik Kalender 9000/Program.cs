@@ -7,6 +7,7 @@ using System.Reflection;
 using Thy_El_Teknik_Kalender_9000;
 using System.IO;
 using System.Security.Cryptography;
+using Thy_El_Teknik_Kalender_9000.Properties;
 
 namespace Thy_El_Teknik_Kalender_9000
 {
@@ -22,6 +23,11 @@ namespace Thy_El_Teknik_Kalender_9000
       //EmbeddedAssembly.Load(protoResource, "protobuf-net.dll");
 
       AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
+
+      Settings.Default.SettingsKey = 
+        Path.Combine(Environment.GetFolderPath(
+          Environment.SpecialFolder.LocalApp‌​licationData),
+          "Thy El Kalender 9000\\user.config");
 
       Application.EnableVisualStyles();
       Application.SetCompatibleTextRenderingDefault(false);

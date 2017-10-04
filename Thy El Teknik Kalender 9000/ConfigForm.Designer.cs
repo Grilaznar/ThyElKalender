@@ -44,7 +44,7 @@
       this.BackButton.Name = "BackButton";
       this.BackButton.Size = new System.Drawing.Size(75, 23);
       this.BackButton.TabIndex = 0;
-      this.BackButton.Text = "Back";
+      this.BackButton.Text = "Cancel";
       this.BackButton.UseVisualStyleBackColor = true;
       this.BackButton.Click += new System.EventHandler(this.BackButton_Click);
       // 
@@ -87,7 +87,7 @@
       // debugCheck
       // 
       this.debugCheck.AutoSize = true;
-      this.debugCheck.Location = new System.Drawing.Point(22, 140);
+      this.debugCheck.Location = new System.Drawing.Point(22, 227);
       this.debugCheck.Name = "debugCheck";
       this.debugCheck.Size = new System.Drawing.Size(109, 17);
       this.debugCheck.TabIndex = 5;

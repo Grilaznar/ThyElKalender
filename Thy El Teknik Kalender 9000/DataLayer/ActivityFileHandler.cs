@@ -18,18 +18,20 @@ namespace Thy_El_Teknik_Kalender_9000.DataLayer
 
     public static string userDefinedSavePath = Settings.Default.CustomSavePath.Trim(' ');
 
+    public static string CurrentSavePath
+    {
+      get
+      {
+        if (userDefinedSavePath != null || userDefinedSavePath != "")
+          return userDefinedSavePath + fileName;
+        else { return filePath + fileName; }
+      }
+    }
+
     public static void SaveData(List<Person> activityData)
     {
       List<DataChunk> data = new List<DataChunk>();
-      string path;
-      if (userDefinedSavePath != null && userDefinedSavePath.Length > 0)
-      {
-        path = userDefinedSavePath + fileName;
-      }
-      else
-      {
-        path = filePath + fileName;
-      }
+      string path = CurrentSavePath;
 
       int numberOfDays = 0;
 
@@ -48,15 +50,7 @@ namespace Thy_El_Teknik_Kalender_9000.DataLayer
     public static List<Person> ReadData()
     {
       List<Person> outputList = new List<Person>();
-      string path;
-      if (userDefinedSavePath != null && userDefinedSavePath.Length > 0)
-      {
-        path = userDefinedSavePath + fileName;
-      }
-      else
-      {
-        path = filePath + fileName;
-      }
+      string path = CurrentSavePath;
 
       if (File.Exists(path))
       {

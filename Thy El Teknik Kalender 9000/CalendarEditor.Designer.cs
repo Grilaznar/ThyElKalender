@@ -233,7 +233,6 @@
             0,
             0,
             0});
-      this.weekNumber.ValueChanged += new System.EventHandler(this.weekNumber_ValueChanged);
       this.weekNumber.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotkeyDetection);
       // 
       // refreshButton
