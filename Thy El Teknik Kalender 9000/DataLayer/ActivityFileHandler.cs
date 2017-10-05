@@ -61,6 +61,9 @@ namespace Thy_El_Teknik_Kalender_9000.DataLayer
 
     private static void WriteProtoFile(string path, List<Person> data)
     {
+      string directory = path.Substring(0, path.LastIndexOf('\\') + 1);
+      if (!Directory.Exists(directory))
+        Directory.CreateDirectory(directory);
       using (Stream stream = File.Open(path, FileMode.Create))
       {
         Serializer.Serialize(stream, data);

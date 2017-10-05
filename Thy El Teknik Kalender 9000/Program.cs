@@ -27,7 +27,7 @@ namespace Thy_El_Teknik_Kalender_9000
       Settings.Default.SettingsKey = 
         Path.Combine(Environment.GetFolderPath(
           Environment.SpecialFolder.LocalApp‌​licationData),
-          "Thy El Kalender 9000\\user.config");
+          "Thy_El_Kalender_9000\\user.config");
 
       Application.EnableVisualStyles();
       Application.SetCompatibleTextRenderingDefault(false);
