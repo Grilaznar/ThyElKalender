@@ -174,6 +174,8 @@ namespace Thy_El_Teknik_Kalender_9000
       config.Add(userSettings);
       doc.Add(config);
       doc.Declaration = declaration;
+      Directory.CreateDirectory(UserConfigPath.Substring(0, UserConfigPath.LastIndexOf('\\') + 1));
+      File.Create(UserConfigPath).Close();
       doc.Save(UserConfigPath);
     }
 

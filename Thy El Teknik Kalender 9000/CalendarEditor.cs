@@ -726,6 +726,10 @@ namespace Thy_El_Teknik_Kalender_9000
               dataGridView2[ev.ColumnIndex, ev.RowIndex]
               .Style.BackColor = errorColor;
             }
+            if(person.Name == ".")
+            {
+              UpdateCalendarContent();
+            }
 
             MarkedForSave();
 
@@ -897,7 +901,11 @@ namespace Thy_El_Teknik_Kalender_9000
     #region Internal functionality
     private int AddPerson(Person person, int retries = 0)
     {
-      if (person.Name == ".") calendarList.Add(person);
+      if (person.Name == ".")
+      {
+        calendarList.Add(person);
+        return 0;
+      }
       if (retries > 10) return -1;
       if (retries > 0)
       {
