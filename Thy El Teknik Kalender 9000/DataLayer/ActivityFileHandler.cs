@@ -15,7 +15,7 @@ namespace Thy_El_Teknik_Kalender_9000.DataLayer
     private static readonly string filePath = AppDomain.CurrentDomain.BaseDirectory;
     private static readonly string fileName = "ThyData.dta";
 
-    public static string userDefinedSavePath = Settings.Default.CustomSavePath.Trim(' ');
+    public static string userDefinedSavePath = Settings.Default.CustomSavePath;
 
     public static string CurrentSavePath
     {
@@ -25,6 +25,10 @@ namespace Thy_El_Teknik_Kalender_9000.DataLayer
           return userDefinedSavePath;
         else
           return filePath ; 
+      }
+      set
+      {
+        userDefinedSavePath = Settings.Default.CustomSavePath = value;
       }
     }
 

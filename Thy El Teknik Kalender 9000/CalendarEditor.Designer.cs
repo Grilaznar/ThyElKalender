@@ -29,12 +29,12 @@
     private void InitializeComponent()
     {
       this.components = new System.ComponentModel.Container();
-      System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-      this.dataGridView1 = new System.Windows.Forms.DataGridView();
+      System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+      this.calendarDataGird = new System.Windows.Forms.DataGridView();
       this.calendarContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.BackButton = new System.Windows.Forms.Button();
       this.MarkButton = new System.Windows.Forms.Button();
-      this.dataGridView2 = new System.Windows.Forms.DataGridView();
+      this.personDataGrid = new System.Windows.Forms.DataGridView();
       this.personContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.dateTimePicker1 = new System.Windows.Forms.DateTimePicker();
       this.SaveButton = new System.Windows.Forms.Button();
@@ -46,39 +46,39 @@
       this.weekNumber = new System.Windows.Forms.NumericUpDown();
       this.refreshButton = new System.Windows.Forms.Button();
       this.updateTimer = new System.Windows.Forms.Timer(this.components);
-      ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.calendarDataGird)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.personDataGrid)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.weekNumber)).BeginInit();
       this.SuspendLayout();
       // 
-      // dataGridView1
+      // calendarDataGird
       // 
-      this.dataGridView1.AllowUserToAddRows = false;
-      this.dataGridView1.AllowUserToDeleteRows = false;
-      this.dataGridView1.AllowUserToResizeColumns = false;
-      this.dataGridView1.AllowUserToResizeRows = false;
-      this.dataGridView1.ColumnHeadersHeight = 25;
-      this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-      this.dataGridView1.ContextMenuStrip = this.calendarContextMenu;
-      dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-      dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-      dataGridViewCellStyle1.Font = new System.Drawing.Font("Arial", 6F);
-      dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-      dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-      dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-      dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-      this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle1;
-      this.dataGridView1.Location = new System.Drawing.Point(350, 12);
-      this.dataGridView1.Name = "dataGridView1";
-      this.dataGridView1.ReadOnly = true;
-      this.dataGridView1.RowHeadersVisible = false;
-      this.dataGridView1.Size = new System.Drawing.Size(501, 335);
-      this.dataGridView1.TabIndex = 10;
-      this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
-      this.dataGridView1.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellDoubleClick);
-      this.dataGridView1.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dataGridView1_CellPainting);
-      this.dataGridView1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.dataGridView1_Scroll);
-      this.dataGridView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotkeyDetection);
+      this.calendarDataGird.AllowUserToAddRows = false;
+      this.calendarDataGird.AllowUserToDeleteRows = false;
+      this.calendarDataGird.AllowUserToResizeColumns = false;
+      this.calendarDataGird.AllowUserToResizeRows = false;
+      this.calendarDataGird.ColumnHeadersHeight = 25;
+      this.calendarDataGird.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+      this.calendarDataGird.ContextMenuStrip = this.calendarContextMenu;
+      dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+      dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+      dataGridViewCellStyle2.Font = new System.Drawing.Font("Arial", 6F);
+      dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+      dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+      dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+      dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+      this.calendarDataGird.DefaultCellStyle = dataGridViewCellStyle2;
+      this.calendarDataGird.Location = new System.Drawing.Point(350, 12);
+      this.calendarDataGird.Name = "calendarDataGird";
+      this.calendarDataGird.ReadOnly = true;
+      this.calendarDataGird.RowHeadersVisible = false;
+      this.calendarDataGird.Size = new System.Drawing.Size(501, 335);
+      this.calendarDataGird.TabIndex = 10;
+      this.calendarDataGird.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
+      this.calendarDataGird.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellDoubleClick);
+      this.calendarDataGird.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dataGridView1_CellPainting);
+      this.calendarDataGird.Scroll += new System.Windows.Forms.ScrollEventHandler(this.dataGridView1_Scroll);
+      this.calendarDataGird.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotkeyDetection);
       // 
       // calendarContextMenu
       // 
@@ -107,32 +107,32 @@
       this.MarkButton.Click += new System.EventHandler(this.MarkClicked);
       this.MarkButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotkeyDetection);
       // 
-      // dataGridView2
+      // personDataGrid
       // 
-      this.dataGridView2.AllowDrop = true;
-      this.dataGridView2.AllowUserToDeleteRows = false;
-      this.dataGridView2.AllowUserToResizeColumns = false;
-      this.dataGridView2.AllowUserToResizeRows = false;
-      this.dataGridView2.ColumnHeadersHeight = 25;
-      this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-      this.dataGridView2.ContextMenuStrip = this.personContextMenu;
-      this.dataGridView2.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
-      this.dataGridView2.Location = new System.Drawing.Point(150, 12);
-      this.dataGridView2.MultiSelect = false;
-      this.dataGridView2.Name = "dataGridView2";
-      this.dataGridView2.RowHeadersVisible = false;
-      this.dataGridView2.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-      this.dataGridView2.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-      this.dataGridView2.Size = new System.Drawing.Size(200, 335);
-      this.dataGridView2.TabIndex = 9;
-      this.dataGridView2.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dataGridView2_CellBeginEdit);
-      this.dataGridView2.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridView2_RowsAdded);
-      this.dataGridView2.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dataGridView2_RowsRemoved);
-      this.dataGridView2.Scroll += new System.Windows.Forms.ScrollEventHandler(this.dataGridView2_Scroll);
-      this.dataGridView2.SelectionChanged += new System.EventHandler(this.dataGridView2_SelectionChanged);
-      this.dataGridView2.Click += new System.EventHandler(this.dataGridView2_Click);
-      this.dataGridView2.DoubleClick += new System.EventHandler(this.dataGridView2_CellDoubleClick);
-      this.dataGridView2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridView2_KeyDown);
+      this.personDataGrid.AllowDrop = true;
+      this.personDataGrid.AllowUserToDeleteRows = false;
+      this.personDataGrid.AllowUserToResizeColumns = false;
+      this.personDataGrid.AllowUserToResizeRows = false;
+      this.personDataGrid.ColumnHeadersHeight = 25;
+      this.personDataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+      this.personDataGrid.ContextMenuStrip = this.personContextMenu;
+      this.personDataGrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
+      this.personDataGrid.Location = new System.Drawing.Point(150, 12);
+      this.personDataGrid.MultiSelect = false;
+      this.personDataGrid.Name = "personDataGrid";
+      this.personDataGrid.RowHeadersVisible = false;
+      this.personDataGrid.ScrollBars = System.Windows.Forms.ScrollBars.None;
+      this.personDataGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
+      this.personDataGrid.Size = new System.Drawing.Size(200, 335);
+      this.personDataGrid.TabIndex = 9;
+      this.personDataGrid.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dataGridView2_CellBeginEdit);
+      this.personDataGrid.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridView2_RowsAdded);
+      this.personDataGrid.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dataGridView2_RowsRemoved);
+      this.personDataGrid.Scroll += new System.Windows.Forms.ScrollEventHandler(this.dataGridView2_Scroll);
+      this.personDataGrid.SelectionChanged += new System.EventHandler(this.dataGridView2_SelectionChanged);
+      this.personDataGrid.Click += new System.EventHandler(this.dataGridView2_Click);
+      this.personDataGrid.DoubleClick += new System.EventHandler(this.dataGridView2_CellDoubleClick);
+      this.personDataGrid.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridView2_KeyDown);
       // 
       // personContextMenu
       // 
@@ -264,19 +264,19 @@
       this.Controls.Add(this.UnmarkButton);
       this.Controls.Add(this.SaveButton);
       this.Controls.Add(this.dateTimePicker1);
-      this.Controls.Add(this.dataGridView2);
+      this.Controls.Add(this.personDataGrid);
       this.Controls.Add(this.MarkButton);
       this.Controls.Add(this.BackButton);
-      this.Controls.Add(this.dataGridView1);
+      this.Controls.Add(this.calendarDataGird);
       this.Name = "CalendarEditor";
       this.Text = "Calendar Editor";
       this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SaveWindowState);
-      this.Load += new System.EventHandler(this.InitDataGrid);
+      this.Load += new System.EventHandler(this.InitDataGrids);
       this.Click += new System.EventHandler(this.DeselectGrids);
       this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotkeyDetection);
-      this.Layout += new System.Windows.Forms.LayoutEventHandler(this.FitDatagrid);
-      ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-      ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
+      this.Layout += new System.Windows.Forms.LayoutEventHandler(this.FitLayout);
+      ((System.ComponentModel.ISupportInitialize)(this.calendarDataGird)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.personDataGrid)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.weekNumber)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
@@ -285,10 +285,10 @@
 
     #endregion
 
-    private System.Windows.Forms.DataGridView dataGridView1;
+    private System.Windows.Forms.DataGridView calendarDataGird;
     private System.Windows.Forms.Button BackButton;
     private System.Windows.Forms.Button MarkButton;
-    private System.Windows.Forms.DataGridView dataGridView2;
+    private System.Windows.Forms.DataGridView personDataGrid;
     private System.Windows.Forms.DateTimePicker dateTimePicker1;
     private System.Windows.Forms.Button UnmarkButton;
     private System.Windows.Forms.Label Startdate;

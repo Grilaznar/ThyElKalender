@@ -13,12 +13,17 @@ namespace Thy_El_Teknik_Kalender_9000.ModelLayer
   //[ProtoContract]
   public class Activity
   {
-    public enum activityType {
+    public enum activityType
+    {
       None = 0,
       Offday,
       Counterbalance,
       Course,
-      Project}
+      Project,
+      Custom1,
+      Custom2,
+      Custom3
+    }
 
     [XmlElement(Order = 20)]
     //[ProtoMember(10)]

@@ -9,13 +9,31 @@
       <Value Profile="(Default)">980, 400</Value>
     </Setting>
     <Setting Name="Debug" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="CustomSavePath" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="WeeksToShow" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">4</Value>
+    </Setting>
+    <Setting Name="CustomColor1" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">Red</Value>
+    </Setting>
+    <Setting Name="CustomColor2" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">Yellow</Value>
+    </Setting>
+    <Setting Name="CustomColor3" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">Blue</Value>
+    </Setting>
+    <Setting Name="CustomText1" Type="System.String" Scope="User">
+      <Value Profile="(Default)">PRJ</Value>
+    </Setting>
+    <Setting Name="CustomText2" Type="System.String" Scope="User">
+      <Value Profile="(Default)">PRJ</Value>
+    </Setting>
+    <Setting Name="CustomText3" Type="System.String" Scope="User">
+      <Value Profile="(Default)">PRJ</Value>
     </Setting>
   </Settings>
 </SettingsFile>
