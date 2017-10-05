@@ -23,7 +23,8 @@ namespace Thy_El_Teknik_Kalender_9000.DataLayer
       {
         if (userDefinedSavePath != null && userDefinedSavePath != "")
           return userDefinedSavePath;
-        else { return filePath ; }
+        else
+          return filePath ; 
       }
     }
 
