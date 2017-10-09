@@ -29,7 +29,7 @@
     private void InitializeComponent()
     {
       this.components = new System.ComponentModel.Container();
-      System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+      System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
       this.calendarDataGird = new System.Windows.Forms.DataGridView();
       this.calendarContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.BackButton = new System.Windows.Forms.Button();
@@ -46,9 +46,12 @@
       this.weekNumber = new System.Windows.Forms.NumericUpDown();
       this.refreshButton = new System.Windows.Forms.Button();
       this.updateTimer = new System.Windows.Forms.Timer(this.components);
+      this.logoBox = new System.Windows.Forms.PictureBox();
+      this.keyboardButton = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this.calendarDataGird)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.personDataGrid)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.weekNumber)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.logoBox)).BeginInit();
       this.SuspendLayout();
       // 
       // calendarDataGird
@@ -60,14 +63,14 @@
       this.calendarDataGird.ColumnHeadersHeight = 25;
       this.calendarDataGird.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
       this.calendarDataGird.ContextMenuStrip = this.calendarContextMenu;
-      dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-      dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-      dataGridViewCellStyle2.Font = new System.Drawing.Font("Arial", 6F);
-      dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-      dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-      dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-      dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-      this.calendarDataGird.DefaultCellStyle = dataGridViewCellStyle2;
+      dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+      dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+      dataGridViewCellStyle1.Font = new System.Drawing.Font("Arial", 6F);
+      dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+      dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+      dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+      dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+      this.calendarDataGird.DefaultCellStyle = dataGridViewCellStyle1;
       this.calendarDataGird.Location = new System.Drawing.Point(350, 12);
       this.calendarDataGird.Name = "calendarDataGird";
       this.calendarDataGird.ReadOnly = true;
@@ -91,7 +94,7 @@
       this.BackButton.Name = "BackButton";
       this.BackButton.Size = new System.Drawing.Size(49, 23);
       this.BackButton.TabIndex = 7;
-      this.BackButton.Text = "Close";
+      this.BackButton.Text = "Luk";
       this.BackButton.UseVisualStyleBackColor = true;
       this.BackButton.Click += new System.EventHandler(this.CloseButton);
       this.BackButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotkeyDetection);
@@ -102,7 +105,7 @@
       this.MarkButton.Name = "MarkButton";
       this.MarkButton.Size = new System.Drawing.Size(107, 23);
       this.MarkButton.TabIndex = 1;
-      this.MarkButton.Text = "Mark";
+      this.MarkButton.Text = "Markér";
       this.MarkButton.UseVisualStyleBackColor = true;
       this.MarkButton.Click += new System.EventHandler(this.MarkClicked);
       this.MarkButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotkeyDetection);
@@ -155,7 +158,7 @@
       this.SaveButton.Name = "SaveButton";
       this.SaveButton.Size = new System.Drawing.Size(75, 23);
       this.SaveButton.TabIndex = 8;
-      this.SaveButton.Text = "Save";
+      this.SaveButton.Text = "Gem";
       this.SaveButton.UseVisualStyleBackColor = true;
       this.SaveButton.Click += new System.EventHandler(this.Save_Click);
       this.SaveButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotkeyDetection);
@@ -166,7 +169,7 @@
       this.UnmarkButton.Name = "UnmarkButton";
       this.UnmarkButton.Size = new System.Drawing.Size(107, 23);
       this.UnmarkButton.TabIndex = 3;
-      this.UnmarkButton.Text = "Unmark";
+      this.UnmarkButton.Text = "Afmarkér";
       this.UnmarkButton.UseVisualStyleBackColor = true;
       this.UnmarkButton.Click += new System.EventHandler(this.UnmarkSelected);
       this.UnmarkButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotkeyDetection);
@@ -178,16 +181,16 @@
       this.Startdate.Name = "Startdate";
       this.Startdate.Size = new System.Drawing.Size(56, 13);
       this.Startdate.TabIndex = 8;
-      this.Startdate.Text = "Start date:";
+      this.Startdate.Text = "Start dato:";
       // 
       // WeeksToShow
       // 
       this.WeeksToShow.AutoSize = true;
       this.WeeksToShow.Location = new System.Drawing.Point(9, 139);
       this.WeeksToShow.Name = "WeeksToShow";
-      this.WeeksToShow.Size = new System.Drawing.Size(82, 13);
+      this.WeeksToShow.Size = new System.Drawing.Size(56, 13);
       this.WeeksToShow.TabIndex = 9;
-      this.WeeksToShow.Text = "Weeks forward:";
+      this.WeeksToShow.Text = "Uger frem:";
       // 
       // activityPicker
       // 
@@ -201,11 +204,11 @@
       // 
       // configButton
       // 
-      this.configButton.Location = new System.Drawing.Point(8, 190);
+      this.configButton.Location = new System.Drawing.Point(8, 164);
       this.configButton.Name = "configButton";
       this.configButton.Size = new System.Drawing.Size(75, 23);
       this.configButton.TabIndex = 6;
-      this.configButton.Text = "Config";
+      this.configButton.Text = "Indstil.";
       this.configButton.UseVisualStyleBackColor = true;
       this.configButton.Click += new System.EventHandler(this.ToConfig);
       this.configButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotkeyDetection);
@@ -240,7 +243,7 @@
       this.refreshButton.Name = "refreshButton";
       this.refreshButton.Size = new System.Drawing.Size(75, 23);
       this.refreshButton.TabIndex = 12;
-      this.refreshButton.Text = "Refresh";
+      this.refreshButton.Text = "Genlæs";
       this.refreshButton.UseVisualStyleBackColor = true;
       this.refreshButton.Click += new System.EventHandler(this.UpdateButton);
       // 
@@ -250,11 +253,32 @@
       this.updateTimer.Interval = 600000;
       this.updateTimer.Tick += new System.EventHandler(this.UpdateTimerTick);
       // 
+      // logoBox
+      // 
+      this.logoBox.Image = global::Thy_El_Teknik_Kalender_9000.Properties.Resources.thy_el_teknik_logo;
+      this.logoBox.Location = new System.Drawing.Point(8, 192);
+      this.logoBox.Name = "logoBox";
+      this.logoBox.Size = new System.Drawing.Size(128, 79);
+      this.logoBox.TabIndex = 14;
+      this.logoBox.TabStop = false;
+      // 
+      // keyboardButton
+      // 
+      this.keyboardButton.Image = global::Thy_El_Teknik_Kalender_9000.Properties.Resources.keyboard_icon_27930;
+      this.keyboardButton.Location = new System.Drawing.Point(21, 284);
+      this.keyboardButton.Name = "keyboardButton";
+      this.keyboardButton.Size = new System.Drawing.Size(28, 23);
+      this.keyboardButton.TabIndex = 13;
+      this.keyboardButton.UseVisualStyleBackColor = true;
+      this.keyboardButton.Click += new System.EventHandler(this.OnScreenKeyboardButton);
+      // 
       // CalendarEditor
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(863, 359);
+      this.Controls.Add(this.logoBox);
+      this.Controls.Add(this.keyboardButton);
       this.Controls.Add(this.refreshButton);
       this.Controls.Add(this.weekNumber);
       this.Controls.Add(this.configButton);
@@ -278,6 +302,7 @@
       ((System.ComponentModel.ISupportInitialize)(this.calendarDataGird)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.personDataGrid)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.weekNumber)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.logoBox)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -301,5 +326,7 @@
     private System.Windows.Forms.Button refreshButton;
     private System.Windows.Forms.Timer updateTimer;
     private System.Windows.Forms.ContextMenuStrip personContextMenu;
+    private System.Windows.Forms.Button keyboardButton;
+    private System.Windows.Forms.PictureBox logoBox;
   }
 }

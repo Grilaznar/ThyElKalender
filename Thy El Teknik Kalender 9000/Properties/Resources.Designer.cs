@@ -61,12 +61,32 @@ namespace Thy_El_Teknik_Kalender_9000.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap keyboard_icon_27930 {
+            get {
+                object obj = ResourceManager.GetObject("keyboard_icon_27930", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         internal static byte[] protobuf_net {
             get {
                 object obj = ResourceManager.GetObject("protobuf_net", resourceCulture);
                 return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap thy_el_teknik_logo {
+            get {
+                object obj = ResourceManager.GetObject("thy_el_teknik_logo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }

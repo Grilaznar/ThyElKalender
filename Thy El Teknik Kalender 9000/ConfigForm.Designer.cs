@@ -92,18 +92,18 @@
       this.PathLabel.AutoSize = true;
       this.PathLabel.Location = new System.Drawing.Point(22, 37);
       this.PathLabel.Name = "PathLabel";
-      this.PathLabel.Size = new System.Drawing.Size(206, 13);
+      this.PathLabel.Size = new System.Drawing.Size(219, 13);
       this.PathLabel.TabIndex = 4;
-      this.PathLabel.Text = "Custom save path (leave blank for default)";
+      this.PathLabel.Text = "Data fil sti (Kræver genstart for at tage effekt)";
       // 
       // debugCheck
       // 
       this.debugCheck.AutoSize = true;
       this.debugCheck.Location = new System.Drawing.Point(22, 259);
       this.debugCheck.Name = "debugCheck";
-      this.debugCheck.Size = new System.Drawing.Size(258, 17);
+      this.debugCheck.Size = new System.Drawing.Size(294, 17);
       this.debugCheck.TabIndex = 5;
-      this.debugCheck.Text = "Enable debug log (Reqiures restart to take effect)";
+      this.debugCheck.Text = "Activer fejlfindings log (Kræver genstart for at tage effekt)";
       this.debugCheck.UseVisualStyleBackColor = true;
       // 
       // label1
@@ -111,27 +111,27 @@
       this.label1.AutoSize = true;
       this.label1.Location = new System.Drawing.Point(22, 130);
       this.label1.Name = "label1";
-      this.label1.Size = new System.Drawing.Size(81, 13);
+      this.label1.Size = new System.Drawing.Size(90, 13);
       this.label1.TabIndex = 6;
-      this.label1.Text = "Custom Color 1:";
+      this.label1.Text = "Vælgselv farve 1:";
       // 
       // label2
       // 
       this.label2.AutoSize = true;
       this.label2.Location = new System.Drawing.Point(22, 155);
       this.label2.Name = "label2";
-      this.label2.Size = new System.Drawing.Size(81, 13);
+      this.label2.Size = new System.Drawing.Size(90, 13);
       this.label2.TabIndex = 7;
-      this.label2.Text = "Custom Color 2:";
+      this.label2.Text = "Vælgselv farve 2:";
       // 
       // label3
       // 
       this.label3.AutoSize = true;
       this.label3.Location = new System.Drawing.Point(22, 180);
       this.label3.Name = "label3";
-      this.label3.Size = new System.Drawing.Size(81, 13);
+      this.label3.Size = new System.Drawing.Size(90, 13);
       this.label3.TabIndex = 8;
-      this.label3.Text = "Custom Color 3:";
+      this.label3.Text = "Vælgselv farve 3:";
       // 
       // colorButton1
       // 
@@ -166,27 +166,27 @@
       this.label4.AutoSize = true;
       this.label4.Location = new System.Drawing.Point(156, 130);
       this.label4.Name = "label4";
-      this.label4.Size = new System.Drawing.Size(78, 13);
+      this.label4.Size = new System.Drawing.Size(83, 13);
       this.label4.TabIndex = 12;
-      this.label4.Text = "Custom Text 1:";
+      this.label4.Text = "Vælgselv text 1:";
       // 
       // label5
       // 
       this.label5.AutoSize = true;
       this.label5.Location = new System.Drawing.Point(156, 155);
       this.label5.Name = "label5";
-      this.label5.Size = new System.Drawing.Size(78, 13);
+      this.label5.Size = new System.Drawing.Size(83, 13);
       this.label5.TabIndex = 13;
-      this.label5.Text = "Custom Text 2:";
+      this.label5.Text = "Vælgselv text 2:";
       // 
       // label6
       // 
       this.label6.AutoSize = true;
       this.label6.Location = new System.Drawing.Point(156, 180);
       this.label6.Name = "label6";
-      this.label6.Size = new System.Drawing.Size(78, 13);
+      this.label6.Size = new System.Drawing.Size(83, 13);
       this.label6.TabIndex = 14;
-      this.label6.Text = "Custom Text 3:";
+      this.label6.Text = "Vælgselv text 3:";
       // 
       // customText1
       // 

@@ -18,6 +18,7 @@ namespace Thy_El_Teknik_Kalender_9000
     {
       InitializeComponent();
 
+      //Load values from settings
       colorButton1.BackColor = Settings.Default.CustomColor1;
       colorButton2.BackColor = Settings.Default.CustomColor2;
       colorButton3.BackColor = Settings.Default.CustomColor3;
@@ -32,32 +33,33 @@ namespace Thy_El_Teknik_Kalender_9000
 
     private void BrowseButton_Click(object sender, EventArgs e)
     {
+      //Find folder
       DialogResult result = folderBrowser.ShowDialog();
       if (result == DialogResult.OK)
       {
         SavePathBox.Text = folderBrowser.SelectedPath;
       }
-      Console.WriteLine(result);
-      Console.WriteLine(folderBrowser.SelectedPath);
     }
 
     private void colorButton_clicked(object sender, EventArgs e)
     {
+      //Find colors
       DialogResult result = colorDialog1.ShowDialog();
       if (result == DialogResult.OK)
       {
         ((Button)sender).BackColor = colorDialog1.Color;
       }
-      
     }
 
     private void OkButton_Click(object sender, EventArgs e)
     {
+      //Save new path is it's the same one
       if (SavePathBox.Text != ActivityFileHandler.CurrentSavePath
         && SavePathBox.Text != "")
         ActivityFileHandler.CurrentSavePath = 
           Path.GetDirectoryName(SavePathBox.Text);
 
+      //Save new settings
       Settings.Default.Debug = debugCheck.Checked;
 
       Settings.Default.CustomColor1 = colorButton1.BackColor;
@@ -76,6 +78,7 @@ namespace Thy_El_Teknik_Kalender_9000
 
     private void BackButton_Click(object sender, EventArgs e)
     {
+      //Don't save anything
       this.Dispose();
     }
   }

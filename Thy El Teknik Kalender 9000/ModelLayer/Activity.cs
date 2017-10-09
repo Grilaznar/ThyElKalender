@@ -16,13 +16,13 @@ namespace Thy_El_Teknik_Kalender_9000.ModelLayer
     public enum activityType
     {
       None = 0,
-      Offday,
-      Counterbalance,
-      Course,
-      Project,
-      Custom1,
-      Custom2,
-      Custom3
+      Fridag,
+      Afspadsering,
+      Kursus,
+      Projekt,
+      Selvvalgt1,
+      Selvvalgt2,
+      Selvvalgt3
     }
 
     [XmlElement(Order = 20)]

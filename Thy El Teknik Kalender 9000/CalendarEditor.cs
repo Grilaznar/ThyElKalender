@@ -12,6 +12,7 @@ using System.Reflection;
 using Thy_El_Teknik_Kalender_9000.ModelLayer;
 using Thy_El_Teknik_Kalender_9000.DataLayer;
 using Thy_El_Teknik_Kalender_9000.Properties;
+using System.Diagnostics;
 
 namespace Thy_El_Teknik_Kalender_9000
 {
@@ -29,14 +30,13 @@ namespace Thy_El_Teknik_Kalender_9000
 
     //System Colors
     private Color errorColor = Color.Red;
-    private Color unknownColor = Color.Pink;
+    private Color unknownColor = Color.DeepPink;
 
     private bool unsavedChanges = false;
+    private bool calendarLocked = false;
 
     public CalendarEditor()
     {
-      Console.WriteLine("LOOK HERE:");
-      Console.WriteLine((int)Activity.activityType.Offday);
       Log.ResetLogFile();
 
       Log.Add("Calenar window starting");
@@ -46,7 +46,7 @@ namespace Thy_El_Teknik_Kalender_9000
       FormClosing += CloseWindow;
 
       // Buttons will overlap if smaller
-      MinimumSize = new Size(440, 340);
+      MinimumSize = new Size(440, 440);
 
       // Enable double buffering on calendar datagrid
       // for massive damage (performance increase)
@@ -66,8 +66,8 @@ namespace Thy_El_Teknik_Kalender_9000
 
       LoadWindowState();
 
-      personDataGrid.Columns.Add("Names", "Names");
-      personDataGrid.Columns.Add("Department", "Department");
+      personDataGrid.Columns.Add("Names", "Navn");
+      personDataGrid.Columns.Add("Department", "");
 
       int nameCellWidth = 118;
       int depCellWidth = 78;
@@ -96,7 +96,6 @@ namespace Thy_El_Teknik_Kalender_9000
     {
       Log.Add("Initializing inputs");
 
-      //dateTimePicker1.MinDate = DateTime.Now.Date;
       dateTimePicker1.Value = DateTime.Now.Date;
       dateTimePicker1.ValueChanged += UpdateCalendarActiveTimespan;
 
@@ -113,19 +112,18 @@ namespace Thy_El_Teknik_Kalender_9000
         calendarContextMenu.Items.Add(actType.ToString(), null, (object s, EventArgs ev) => { MarkSelected(actType); });
       }
       // And add the option to Clear the selected area by rightclick
-      calendarContextMenu.Items.Add("Clear", null, (object s, EventArgs ev) => { UnmarkSelected(this, null); });
+      calendarContextMenu.Items.Add("Afmarkér", null, (object s, EventArgs ev) => { UnmarkSelected(this, null); });
 
-      //Person list rightclick options
-      //personContextMenu.Items.Add("Add", null, (object s, EventArgs ev) => { ; });
       personContextMenu.Items
-        .Add("Move", null, (object s, EventArgs ev) => { StartRowMovement(); }).Name = "Move";
+        .Add("Flyt", null, (object s, EventArgs ev) => { StartRowMovement(); }).Name = "Move";
       personContextMenu.Items
-        .Add("Add New", null, (object s, EventArgs ev) => { AddDataRow(new Person("-", "")); }).Name = "Add";
+        .Add("Tilføj ny", null, (object s, EventArgs ev) => { AddDataRow(new Person("-", "")); }).Name = "Add";
       personContextMenu.Items
-        .Add("Insert New", null, (object s, EventArgs ev) => { InsertDataRow(); }).Name = "Insert";
+        .Add("Indsæt ny", null, (object s, EventArgs ev) => { InsertDataRow(); }).Name = "Insert";
       personContextMenu.Items
-        .Add("Delete Selected", null, (object s, EventArgs ev) => { DeleteRowsClick(); }).Name = "Delete";
+        .Add("Slet valgte", null, (object s, EventArgs ev) => { DeleteRowsClick(); }).Name = "Delete";
 
+      personContextMenu.Items.Find("Move", false)[0].Enabled = false;
       personContextMenu.Items.Find("Insert", false)[0].Enabled = false;
       personContextMenu.Items.Find("Delete", false)[0].Enabled = false;
 
@@ -183,6 +181,8 @@ namespace Thy_El_Teknik_Kalender_9000
         new Point(BackButton.Location.X, ClientSize.Height - 12 - BackButton.Size.Height);
       refreshButton.Location =
         new Point(refreshButton.Location.X, BackButton.Location.Y - 40);
+      keyboardButton.Location =
+        new Point(keyboardButton.Location.X, BackButton.Location.Y - 40);
     }
     #endregion
 
@@ -482,7 +482,7 @@ namespace Thy_El_Teknik_Kalender_9000
         calendarDataGird.Columns[i].SortMode =
           DataGridViewColumnSortMode.NotSortable;
 
-        if (isColumnHoliday(i))
+        if (IsColumnHoliday(i))
         {
           calendarDataGird.Columns[i].DefaultCellStyle.BackColor =
             Color.Aquamarine;
@@ -672,6 +672,13 @@ namespace Thy_El_Teknik_Kalender_9000
       config.Show();
     }
 
+    private void OnScreenKeyboardButton(object sender, EventArgs e)
+    {
+      Process ExternalProcess = new Process();
+      ExternalProcess.StartInfo.FileName = "osk.exe";
+      ExternalProcess.Start();
+    }
+
     private void weekNumber_ValueChanged(object sender, EventArgs e)
     {
       Settings.Default.WeeksToShow = (int)weekNumber.Value;
@@ -689,7 +696,7 @@ namespace Thy_El_Teknik_Kalender_9000
     private void MarkedForSave()
     {
       unsavedChanges = true;
-      SaveButton.BackColor = Color.LightBlue;
+      SaveButton.BackColor = Color.Yellow;
     }
 
     private void UnmarkedForSave()
@@ -700,18 +707,27 @@ namespace Thy_El_Teknik_Kalender_9000
     #endregion
 
     #region Datagrid events
+    /// <summary>
+    /// Will add a new row to both person list and calendar grid
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void dataGridView2_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
     {
       if (personDataGrid.ContainsFocus
         && e.RowIndex == personDataGrid.RowCount - 1)
       {
+        //Add coresponding row in calendar grid
         calendarDataGird.Rows.Add();
 
+        //Set up event handler to save the data when done
         DataGridViewCellEventHandler saveRowChanges = null;
         saveRowChanges = delegate (object s, DataGridViewCellEventArgs ev)
         {
+          //Double checking aint trying weird shit
           if (ev.RowIndex < personDataGrid.RowCount - 1)
           {
+            //Create person based on input
             Person person =
               new Person(
                 (string)personDataGrid[ev.ColumnIndex, ev.RowIndex].Value,
@@ -719,6 +735,7 @@ namespace Thy_El_Teknik_Kalender_9000
 
             AddPerson(person);
 
+            //If intended to be splitter line, update datagrids
             if (person.Name == ".")
             {
               UpdateCalendarContent();
@@ -726,22 +743,32 @@ namespace Thy_El_Teknik_Kalender_9000
 
             MarkedForSave();
 
+            //Remove this eventhandler after execution
             personDataGrid.CellEndEdit -= saveRowChanges;
           }
         };
+        //Add handler to event
         personDataGrid.CellEndEdit += saveRowChanges;
       }
     }
 
+    /// <summary>
+    /// Enable/Disable context menu buttons that 
+    /// require something to be selected cells
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void dataGridView2_SelectionChanged(object sender, EventArgs e)
     {
       if (personDataGrid.SelectedCells.Count > 0)
       {
+        personContextMenu.Items.Find("Move", false)[0].Enabled = true;
         personContextMenu.Items.Find("Insert", false)[0].Enabled = true;
         personContextMenu.Items.Find("Delete", false)[0].Enabled = true;
       }
       else
       {
+        personContextMenu.Items.Find("Move", false)[0].Enabled = false;
         personContextMenu.Items.Find("Insert", false)[0].Enabled = false;
         personContextMenu.Items.Find("Delete", false)[0].Enabled = false;
       }
@@ -818,41 +845,44 @@ namespace Thy_El_Teknik_Kalender_9000
     #endregion
 
     #region Grid1 paint
+    //Custom paint event to paint header weeknumber and dates in daterow
     private void dataGridView1_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
     {
-      bool useV2 = true;
+      //For header
       if (e.RowIndex == -1)
       {
         int mondayColumnIndex = e.ColumnIndex - e.ColumnIndex % 7;
-        bool isMondayColumn = e.ColumnIndex % 7 == 0;
 
-        if (useV2)
+        //Don't need custom background, though maybe i should
+        e.PaintBackground(e.CellBounds, false);
+
+        if (e.ColumnIndex % 7 < 2)
         {
-          e.PaintBackground(e.CellBounds, false);
-          if (e.ColumnIndex % 7 < 2)
-          {
-            string headerText =
-                "Uge " + HolidayCalculator.WeekNumber(
-                  startDate.AddDays(mondayColumnIndex));
+          string headerText =
+              "Uge " + HolidayCalculator.WeekNumber(
+                startDate.AddDays(mondayColumnIndex));
 
-            SizeF sz = e.Graphics.MeasureString(
-                headerText,
-                calendarDataGird.Font);
-
-            Point drawStart = new Point(
-              (int)e.CellBounds.Left + 4 - (e.ColumnIndex % 7 * 22),
-              (int)(e.CellBounds.Bottom / 2 - sz.Height / 2));
-            if (e.ColumnIndex == 0) drawStart.X += 1;
-
-            e.Graphics.SetClip(e.ClipBounds);
-            e.Graphics.DrawString(
+          SizeF textSize = e.Graphics.MeasureString(
               headerText,
-              calendarDataGird.ColumnHeadersDefaultCellStyle.Font,
-              Brushes.Black,
-              drawStart);
-          }
-        }
+              calendarDataGird.Font);
 
+          Point drawStart = new Point(
+            (int)e.CellBounds.Left + 4 - (e.ColumnIndex % 7 * 22),
+            (int)(e.CellBounds.Bottom / 2 - textSize.Height / 2));
+
+          //For reasons i don't understand the first row has an extra pixel
+          if (e.ColumnIndex == 0) drawStart.X += 1;
+
+          //Set clip to only show what is inside the cell
+          e.Graphics.SetClip(e.ClipBounds);
+
+          e.Graphics.DrawString(
+            headerText,
+            calendarDataGird.ColumnHeadersDefaultCellStyle.Font,
+            Brushes.Black,
+            drawStart);
+        }
+        //Done
         e.Handled = true;
       }
       // If date row paint date
@@ -861,13 +891,29 @@ namespace Thy_El_Teknik_Kalender_9000
       {
         try
         {
+          //Date exists in the cell, extract it
           string Datetext = e.FormattedValue.ToString();
+          //Don't want custom background
           e.PaintBackground(e.CellBounds, true);
+          //Move our reference point, really need look colser at this
           e.Graphics.TranslateTransform(e.CellBounds.Left, e.CellBounds.Top);
-          e.Graphics.DrawString(Datetext.Substring(0, 2), e.CellStyle.Font, Brushes.Black, -1, -2);
+          //Draw day
+          e.Graphics.DrawString(
+            Datetext.Substring(0, 2),
+            e.CellStyle.Font, Brushes.Black,
+            -1,
+            -2);
+          //Draw seperating character
           e.Graphics.DrawString("/", e.CellStyle.Font, Brushes.Black, 7, 4);
-          e.Graphics.DrawString(Datetext.Substring(3, 2), e.CellStyle.Font, Brushes.Black, 9, 9);
+          //Draw Month
+          e.Graphics.DrawString(
+            Datetext.Substring(3, 2),
+            e.CellStyle.Font, Brushes.Black,
+            9,
+            9);
+          //Reset reference point
           e.Graphics.ResetTransform();
+          //Done
           e.Handled = true;
         }
         catch (ArgumentOutOfRangeException ex)
@@ -876,24 +922,34 @@ namespace Thy_El_Teknik_Kalender_9000
         }
       }
     }
-    private void dataGridView1_Paint(object sender, PaintEventArgs e)
-    {
-
-    }
     #endregion
 
     #region Internal functionality
+    /// <summary>
+    /// Add the given person to internal list
+    /// </summary>
+    /// <param name="person">Person to add</param>
     private void AddPerson(Person person)
     {
       calendarList.Add(person);
     }
 
-    private bool ChangePersonName(int index, string newName)
+    /// <summary>
+    /// Change the name of the person at index to the given string
+    /// </summary>
+    /// <param name="index">Index of intended person</param>
+    /// <param name="newName">Name to replace with</param>
+    /// <returns></returns>
+    private void ChangePersonName(int index, string newName)
     {
       calendarList[index].Name = newName;
-      return true;
     }
 
+    /// <summary>
+    /// Update from file, if there are no unsaved changes
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void UpdateTimerTick(object sender, EventArgs e)
     {
       if (!unsavedChanges && calendarDataGird.SelectedCells.Count == 0)
@@ -902,6 +958,9 @@ namespace Thy_El_Teknik_Kalender_9000
       }
     }
 
+    /// <summary>
+    /// Fills holidayColumns with relevant holidays
+    /// </summary>
     private void FindHolidays()
     {
       holidayColumns.Clear();
@@ -959,11 +1018,21 @@ namespace Thy_El_Teknik_Kalender_9000
       calendarDataGird.ClearSelection();
     }
 
-    private bool isColumnHoliday(int columnIndex)
+    /// <summary>
+    /// Returns true if the column is a holiday
+    /// </summary>
+    /// <param name="columnIndex">Index of column to check</param>
+    /// <returns></returns>
+    private bool IsColumnHoliday(int columnIndex)
     {
       return holidayColumns.Contains(columnIndex);
     }
 
+    /// <summary>
+    /// Returns true if the column is a weekend
+    /// </summary>
+    /// <param name="columnIndex">Index of column to check</param>
+    /// <returns></returns>
     private bool IsColumnWeekend(int columnIndex)
     {
       return (columnIndex % 7) > 4;
@@ -973,32 +1042,41 @@ namespace Thy_El_Teknik_Kalender_9000
       config.Activate();
     }
 
+    /// <summary>
+    /// Returns value of the timePicker in whole days
+    /// </summary>
+    /// <returns></returns>
     private DateTime FetchStartDateFromTimepicker()
     {
       Log.Add("Date fetched from time picker: " + dateTimePicker1.Value);
       return dateTimePicker1.Value.Date;
     }
 
+    /// <summary>
+    /// Returns a three letter string associated with the given activityType
+    /// </summary>
+    /// <param name="activityCode"></param>
+    /// <returns></returns>
     private string ActivityText(Activity.activityType activityCode)
     {
       switch (activityCode)
       {
-        case Activity.activityType.Offday:
+        case Activity.activityType.Fridag:
           return "FRI";
 
-        case Activity.activityType.Counterbalance:
+        case Activity.activityType.Afspadsering:
           return "AFS";
 
-        case Activity.activityType.Course:
+        case Activity.activityType.Kursus:
           return "KRS";
 
-        case Activity.activityType.Custom1:
+        case Activity.activityType.Selvvalgt1:
           return Settings.Default.CustomText1;
 
-        case Activity.activityType.Custom2:
+        case Activity.activityType.Selvvalgt2:
           return Settings.Default.CustomText2;
 
-        case Activity.activityType.Custom3:
+        case Activity.activityType.Selvvalgt3:
           return Settings.Default.CustomText3;
 
         default:
@@ -1006,29 +1084,34 @@ namespace Thy_El_Teknik_Kalender_9000
       }
     }
 
+    /// <summary>
+    /// Returns the color associsated with the given activityType
+    /// </summary>
+    /// <param name="activityCode"></param>
+    /// <returns></returns>
     private Color ActivityColor(Activity.activityType activityCode)
     {
       switch (activityCode)
       {
-        case Activity.activityType.Offday:
+        case Activity.activityType.Fridag:
           return Color.LightGreen;
 
-        case Activity.activityType.Counterbalance:
+        case Activity.activityType.Afspadsering:
           return Color.Green;
 
-        case Activity.activityType.Project:
+        case Activity.activityType.Projekt:
           return Color.DarkCyan;
 
-        case Activity.activityType.Course:
+        case Activity.activityType.Kursus:
           return Color.Wheat;
 
-        case Activity.activityType.Custom1:
+        case Activity.activityType.Selvvalgt1:
           return Settings.Default.CustomColor1;
 
-        case Activity.activityType.Custom2:
+        case Activity.activityType.Selvvalgt2:
           return Settings.Default.CustomColor2;
 
-        case Activity.activityType.Custom3:
+        case Activity.activityType.Selvvalgt3:
           return Settings.Default.CustomColor3;
 
         default:
@@ -1037,6 +1120,11 @@ namespace Thy_El_Teknik_Kalender_9000
       }
     }
 
+    /// <summary>
+    /// Checks pressed keys for hotkey combinations
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void HotkeyDetection(object sender, KeyEventArgs e)
     {
       if (e.KeyData == (Keys.S | Keys.Control))
@@ -1049,109 +1137,64 @@ namespace Thy_El_Teknik_Kalender_9000
         UpdateButton(this, e);
         e.Handled = true;
       }
+      if (e.KeyData == (Keys.L | Keys.Control))
+      {
+        if (!calendarLocked)
+        {
+          LockCalendar();
+          e.Handled = true;
+        }
+        else
+        {
+          calendarLocked = false;
+          MarkButton.Enabled = true;
+          UnmarkButton.Enabled = true;
+          activityPicker.Enabled = true;
+          e.Handled = true;
+        }
+      }
+    }
+    private void LockCalendar()
+    {
+      calendarLocked = true;
+      Save_Click(this, null);
+      MarkButton.Enabled = false;
+      UnmarkButton.Enabled = false;
+      activityPicker.Enabled = false;
+
+      calendarDataGird.ClearSelection();
+      personDataGrid.ClearSelection();
+
+      EventHandler deselectHandler = null;
+      deselectHandler = delegate (object sender, EventArgs e)
+      {
+        if (!calendarLocked)
+        {
+          ((DataGridView)sender).SelectionChanged -= deselectHandler;
+        }
+        else
+        {
+          ((DataGridView)sender).ClearSelection();
+        }
+      };
+
+      personDataGrid.SelectionChanged += deselectHandler;
+      calendarDataGird.SelectionChanged += deselectHandler;
     }
 
+    /// <summary>
+    /// Returns true if the given cell is an eligible workday
+    /// </summary>
+    /// <param name="cell">Cell to be checked</param>
+    /// <returns></returns>
     private bool IsCellMarkable(DataGridViewCell cell)
     {
       return !(
         cell.RowIndex < 1 ||
         IsColumnWeekend(cell.ColumnIndex) ||
-        isColumnHoliday(cell.ColumnIndex) ||
+        IsColumnHoliday(cell.ColumnIndex) ||
         calendarList[cell.RowIndex - 1].Name == ".");
     }
-    #endregion
-
-    #region Not Active
-    /*
-    
-    private bool ChangePersonName(Person person, string newName)
-    {
-      if (!calendarList.Contains(new Person(newName), new PersonComparer()))
-      {
-        calendarList.Find(p => p.Name == person.Name).Name = newName;
-
-        return true;
-      }
-      return false;
-    }
-
-    public class ContextMenukEventArgs : EventArgs
-    {
-      public int ClickedRowIndex { get; private set; }
-
-      public ContextMenukEventArgs(int clickedRowIndex)
-      {
-        ClickedRowIndex = clickedRowIndex;
-      }
-    }
-
-    private int weekHeaderWidth(int rowIndex)
-    {
-      int width = 0;
-      for (int i = 0; i < 7; i++)
-      {
-        width += dataGridView1.Columns[rowIndex + i].Width;
-      }
-      return width;
-    }
-    
-    private void filltestdata()
-    {
-
-      AddDataRow(
-        new Person("Mogens", "Værksted"),
-        new List<Activity>() {
-          new Activity(new DateTime(2017, 9, 11), Activity.activityType.Offday),
-          new Activity(new DateTime(2017, 9, 12), Activity.activityType.Offday) });
-      AddDataRow(
-        new Person("Sven", "Værksted"),
-        new List<Activity>() {
-          new Activity(new DateTime(2017, 9, 10), Activity.activityType.Offday) });
-      AddDataRow(
-        new Person("Kurt", "Værksted"),
-        new List<Activity>() {
-          new Activity(new DateTime(2017, 9, 19), Activity.activityType.Offday) });
-      AddDataRow(
-        new Person("Knud", "Værksted"),
-        new List<Activity>() {
-          new Activity(new DateTime(2017, 9, 15), Activity.activityType.Offday) });
-      AddDataRow(
-        new Person("Ib", "Salg"),
-        new List<Activity>() {
-          new Activity(new DateTime(2017, 9, 20), Activity.activityType.Offday) });
-      AddDataRow(
-        new Person("Karl", "den Mægtige"),
-        new List<Activity>() {
-          new Activity(new DateTime(2017, 9, 18), Activity.activityType.Offday),
-          new Activity(new DateTime(2017, 9, 19), Activity.activityType.Offday),
-          new Activity(new DateTime(2017, 9, 20), Activity.activityType.Offday),
-          new Activity(new DateTime(2017, 9, 21), Activity.activityType.Offday),
-          new Activity(new DateTime(2017, 9, 22), Activity.activityType.Offday) });
-      AddDataRow(
-        new Person("Åge", "Salg"),
-        new List<Activity>() {
-          new Activity(new DateTime(2017, 9, 18), Activity.activityType.Offday),
-          new Activity(new DateTime(2017, 9, 22), Activity.activityType.Offday) });
-      AddDataRow(
-        new Person("Jalte", "Kontor"),
-        new List<Activity>() {
-          new Activity(new DateTime(2017, 9, 18), Activity.activityType.Offday),
-          new Activity(new DateTime(2017, 9, 22), Activity.activityType.Offday) });
-      AddDataRow(
-        new Person("Jeanette", "Værksted"),
-        new List<Activity>() {
-          new Activity(new DateTime(2017, 9, 18), Activity.activityType.Offday),
-          new Activity(new DateTime(2017, 9, 22), Activity.activityType.Offday) });
-      AddDataRow(
-        new Person("Adam", "Kontor"),
-        new List<Activity>() {
-          new Activity(new DateTime(2017, 9, 18), Activity.activityType.Offday),
-          new Activity(new DateTime(2017, 9, 19), Activity.activityType.Offday),
-          new Activity(new DateTime(2017, 9, 20), Activity.activityType.Offday),
-          new Activity(new DateTime(2017, 9, 21), Activity.activityType.Offday),
-          new Activity(new DateTime(2017, 9, 22), Activity.activityType.Offday) });
-    }
-  */
     #endregion
   }
 }
