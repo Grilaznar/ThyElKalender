@@ -71,6 +71,16 @@ namespace Thy_El_Teknik_Kalender_9000.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap lock1600 {
+            get {
+                object obj = ResourceManager.GetObject("lock1600", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         internal static byte[] protobuf_net {
@@ -86,6 +96,16 @@ namespace Thy_El_Teknik_Kalender_9000.Properties {
         internal static System.Drawing.Bitmap thy_el_teknik_logo {
             get {
                 object obj = ResourceManager.GetObject("thy_el_teknik_logo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap unlock1600 {
+            get {
+                object obj = ResourceManager.GetObject("unlock1600", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

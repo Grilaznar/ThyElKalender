@@ -35,5 +35,8 @@
     <Setting Name="CustomText3" Type="System.String" Scope="User">
       <Value Profile="(Default)">PRJ</Value>
     </Setting>
+    <Setting Name="Locked" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

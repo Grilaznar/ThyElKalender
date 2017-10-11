@@ -154,5 +154,17 @@ namespace Thy_El_Teknik_Kalender_9000.Properties {
                 this["CustomText3"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Locked {
+            get {
+                return ((bool)(this["Locked"]));
+            }
+            set {
+                this["Locked"] = value;
+            }
+        }
     }
 }

@@ -103,7 +103,7 @@
       this.debugCheck.Name = "debugCheck";
       this.debugCheck.Size = new System.Drawing.Size(294, 17);
       this.debugCheck.TabIndex = 5;
-      this.debugCheck.Text = "Activer fejlfindings log (Kræver genstart for at tage effekt)";
+      this.debugCheck.Text = "Aktiver fejlfindings log (Kræver genstart for at tage effekt)";
       this.debugCheck.UseVisualStyleBackColor = true;
       // 
       // label1

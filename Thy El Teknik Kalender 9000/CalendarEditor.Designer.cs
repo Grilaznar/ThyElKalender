@@ -29,7 +29,8 @@
     private void InitializeComponent()
     {
       this.components = new System.ComponentModel.Container();
-      System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+      System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+      System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CalendarEditor));
       this.calendarDataGird = new System.Windows.Forms.DataGridView();
       this.calendarContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.BackButton = new System.Windows.Forms.Button();
@@ -48,6 +49,7 @@
       this.updateTimer = new System.Windows.Forms.Timer(this.components);
       this.logoBox = new System.Windows.Forms.PictureBox();
       this.keyboardButton = new System.Windows.Forms.Button();
+      this.lockButton = new System.Windows.Forms.Button();
       ((System.ComponentModel.ISupportInitialize)(this.calendarDataGird)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.personDataGrid)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.weekNumber)).BeginInit();
@@ -63,14 +65,14 @@
       this.calendarDataGird.ColumnHeadersHeight = 25;
       this.calendarDataGird.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
       this.calendarDataGird.ContextMenuStrip = this.calendarContextMenu;
-      dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-      dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-      dataGridViewCellStyle1.Font = new System.Drawing.Font("Arial", 6F);
-      dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-      dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-      dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-      dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-      this.calendarDataGird.DefaultCellStyle = dataGridViewCellStyle1;
+      dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+      dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+      dataGridViewCellStyle2.Font = new System.Drawing.Font("Arial", 6F);
+      dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+      dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+      dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+      dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+      this.calendarDataGird.DefaultCellStyle = dataGridViewCellStyle2;
       this.calendarDataGird.Location = new System.Drawing.Point(350, 12);
       this.calendarDataGird.Name = "calendarDataGird";
       this.calendarDataGird.ReadOnly = true;
@@ -124,9 +126,9 @@
       this.personDataGrid.MultiSelect = false;
       this.personDataGrid.Name = "personDataGrid";
       this.personDataGrid.RowHeadersVisible = false;
-      this.personDataGrid.ScrollBars = System.Windows.Forms.ScrollBars.None;
+      this.personDataGrid.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
       this.personDataGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-      this.personDataGrid.Size = new System.Drawing.Size(200, 335);
+      this.personDataGrid.Size = new System.Drawing.Size(218, 335);
       this.personDataGrid.TabIndex = 9;
       this.personDataGrid.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dataGridView2_CellBeginEdit);
       this.personDataGrid.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridView2_RowsAdded);
@@ -255,7 +257,7 @@
       // 
       // logoBox
       // 
-      this.logoBox.Image = global::Thy_El_Teknik_Kalender_9000.Properties.Resources.thy_el_teknik_logo;
+      this.logoBox.Image = ((System.Drawing.Image)(resources.GetObject("logoBox.Image")));
       this.logoBox.Location = new System.Drawing.Point(8, 192);
       this.logoBox.Name = "logoBox";
       this.logoBox.Size = new System.Drawing.Size(128, 79);
@@ -264,7 +266,7 @@
       // 
       // keyboardButton
       // 
-      this.keyboardButton.Image = global::Thy_El_Teknik_Kalender_9000.Properties.Resources.keyboard_icon_27930;
+      this.keyboardButton.Image = ((System.Drawing.Image)(resources.GetObject("keyboardButton.Image")));
       this.keyboardButton.Location = new System.Drawing.Point(21, 284);
       this.keyboardButton.Name = "keyboardButton";
       this.keyboardButton.Size = new System.Drawing.Size(28, 23);
@@ -272,11 +274,23 @@
       this.keyboardButton.UseVisualStyleBackColor = true;
       this.keyboardButton.Click += new System.EventHandler(this.OnScreenKeyboardButton);
       // 
+      // lockButton
+      // 
+      this.lockButton.Image = global::Thy_El_Teknik_Kalender_9000.Properties.Resources.lock1600;
+      this.lockButton.Location = new System.Drawing.Point(96, 164);
+      this.lockButton.Name = "lockButton";
+      this.lockButton.Size = new System.Drawing.Size(28, 23);
+      this.lockButton.TabIndex = 15;
+      this.lockButton.UseVisualStyleBackColor = true;
+      this.lockButton.Click += new System.EventHandler(this.LockButton_Click);
+      // 
       // CalendarEditor
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(863, 359);
+      this.Controls.Add(this.calendarDataGird);
+      this.Controls.Add(this.lockButton);
       this.Controls.Add(this.logoBox);
       this.Controls.Add(this.keyboardButton);
       this.Controls.Add(this.refreshButton);
@@ -291,10 +305,9 @@
       this.Controls.Add(this.personDataGrid);
       this.Controls.Add(this.MarkButton);
       this.Controls.Add(this.BackButton);
-      this.Controls.Add(this.calendarDataGird);
       this.Name = "CalendarEditor";
       this.Text = "Calendar Editor";
-      this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SaveWindowState);
+      this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SaveSettings);
       this.Load += new System.EventHandler(this.InitDataGrids);
       this.Click += new System.EventHandler(this.DeselectGrids);
       this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotkeyDetection);
@@ -328,5 +341,6 @@
     private System.Windows.Forms.ContextMenuStrip personContextMenu;
     private System.Windows.Forms.Button keyboardButton;
     private System.Windows.Forms.PictureBox logoBox;
+    private System.Windows.Forms.Button lockButton;
   }
 }

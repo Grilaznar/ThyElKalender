@@ -46,7 +46,7 @@ namespace Thy_El_Teknik_Kalender_9000
       FormClosing += CloseWindow;
 
       // Buttons will overlap if smaller
-      MinimumSize = new Size(440, 440);
+      MinimumSize = new Size(440, 400);
 
       // Enable double buffering on calendar datagrid
       // for massive damage (performance increase)
@@ -64,12 +64,12 @@ namespace Thy_El_Teknik_Kalender_9000
     {
       Log.Add("Calendar window interior initializing");
 
-      LoadWindowState();
+      LoadSettings();
 
       personDataGrid.Columns.Add("Names", "Navn");
       personDataGrid.Columns.Add("Department", "");
 
-      int nameCellWidth = 118;
+      int nameCellWidth = 120;
       int depCellWidth = 78;
       personDataGrid.Columns[0].Width = nameCellWidth;
       personDataGrid.Columns[0].SortMode = DataGridViewColumnSortMode.NotSortable;
@@ -90,6 +90,8 @@ namespace Thy_El_Teknik_Kalender_9000
           .StartNew(ActivityFileHandler.ReadData).Result);
 
       personDataGrid.Rows[0].DefaultCellStyle.BackColor = SystemColors.ControlDark;
+
+      if (calendarLocked) LockCalendar();
     }
 
     private void InitInputs()
@@ -131,8 +133,8 @@ namespace Thy_El_Teknik_Kalender_9000
     }
     #endregion
 
-    #region Window State
-    private void LoadWindowState()
+    #region Settings
+    private void LoadSettings()
     {
       Log.Add("Loading window state");
       // Set window location
@@ -146,12 +148,15 @@ namespace Thy_El_Teknik_Kalender_9000
       {
         this.Size = Settings.Default.CalendarSize;
       }
+
+      calendarLocked = Settings.Default.Locked;
+
       Log.Add("Window state:"
         + " Location '" + Location.X + " x " + Location.Y + "'"
         + " Size '" + Size.Width + " x " + Size.Height + "'");
     }
 
-    private void SaveWindowState(object sender, FormClosingEventArgs e)
+    private void SaveSettings(object sender, FormClosingEventArgs e)
     {
       // Copy window location to app settings
       Settings.Default.CalendarLocation = this.Location;
@@ -165,6 +170,8 @@ namespace Thy_El_Teknik_Kalender_9000
       {
         Settings.Default.CalendarSize = this.RestoreBounds.Size;
       }
+
+      Settings.Default.Locked = calendarLocked;
 
       Settings.Default.Save();
     }
@@ -577,6 +584,12 @@ namespace Thy_El_Teknik_Kalender_9000
     #endregion
 
     #region Button events
+    private void LockButton_Click(object sender, EventArgs e)
+    {
+      if (calendarLocked) UnlockCalendar();
+      else LockCalendar();
+    }
+
     private void UpdateButton(object sender, EventArgs e)
     {
       ClearDatagrid();
@@ -613,7 +626,7 @@ namespace Thy_El_Teknik_Kalender_9000
           return;
         }
       }
-      SaveWindowState(this, null);
+      SaveSettings(this, null);
 
       this.Dispose();
     }
@@ -1139,6 +1152,7 @@ namespace Thy_El_Teknik_Kalender_9000
       }
       if (e.KeyData == (Keys.L | Keys.Control))
       {
+
         if (!calendarLocked)
         {
           LockCalendar();
@@ -1146,10 +1160,7 @@ namespace Thy_El_Teknik_Kalender_9000
         }
         else
         {
-          calendarLocked = false;
-          MarkButton.Enabled = true;
-          UnmarkButton.Enabled = true;
-          activityPicker.Enabled = true;
+          UnlockCalendar();
           e.Handled = true;
         }
       }
@@ -1161,6 +1172,7 @@ namespace Thy_El_Teknik_Kalender_9000
       MarkButton.Enabled = false;
       UnmarkButton.Enabled = false;
       activityPicker.Enabled = false;
+      lockButton.Image = Resources.unlock1600;
 
       calendarDataGird.ClearSelection();
       personDataGrid.ClearSelection();
@@ -1180,6 +1192,27 @@ namespace Thy_El_Teknik_Kalender_9000
 
       personDataGrid.SelectionChanged += deselectHandler;
       calendarDataGird.SelectionChanged += deselectHandler;
+    }
+
+    private void UnlockCalendar()
+    {
+      using (PasswordDialog passDia = new PasswordDialog())
+      {
+        string pass = "";
+        do
+        {
+          pass = passDia.Password();
+          if (pass == "Pass")
+          {
+            calendarLocked = false;
+            MarkButton.Enabled = true;
+            UnmarkButton.Enabled = true;
+            activityPicker.Enabled = true;
+            lockButton.Image = Resources.lock1600;
+            break;
+          }
+        } while (pass != null);
+      }
     }
 
     /// <summary>
