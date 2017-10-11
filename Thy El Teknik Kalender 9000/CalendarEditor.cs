@@ -35,6 +35,8 @@ namespace Thy_El_Teknik_Kalender_9000
     private bool unsavedChanges = false;
     private bool calendarLocked = false;
 
+    private string Password = "Pass";
+
     public CalendarEditor()
     {
       Log.ResetLogFile();
@@ -298,6 +300,7 @@ namespace Thy_El_Teknik_Kalender_9000
         string name = personDataGrid[0, index].Value.ToString();
         personDataGrid.Rows.RemoveAt(index);
         calendarList.RemoveAt(index - 1);
+        MarkedForSave();
       }
     }
 
@@ -311,6 +314,7 @@ namespace Thy_El_Teknik_Kalender_9000
           personDataGrid.Rows.RemoveAt(index[i]);
           calendarList.RemoveAt(index[i] - 1);
         }
+        MarkedForSave();
       }
     }
 
@@ -322,6 +326,7 @@ namespace Thy_El_Teknik_Kalender_9000
         personDataGrid.Rows.RemoveAt(1);
       }
       calendarList.Clear();
+      MarkedForSave();
     }
     #endregion
 
@@ -390,6 +395,8 @@ namespace Thy_El_Teknik_Kalender_9000
         personDataGrid.Rows.RemoveAt(movingRowIndex);
 
         InsertDataRow(arrivalRowIndex, person);
+
+        MarkedForSave();
       }
     }
     #endregion
@@ -1172,6 +1179,8 @@ namespace Thy_El_Teknik_Kalender_9000
       MarkButton.Enabled = false;
       UnmarkButton.Enabled = false;
       activityPicker.Enabled = false;
+      personContextMenu.Enabled = false;
+      calendarContextMenu.Enabled = false;
       lockButton.Image = Resources.unlock1600;
 
       calendarDataGird.ClearSelection();
@@ -1202,12 +1211,14 @@ namespace Thy_El_Teknik_Kalender_9000
         do
         {
           pass = passDia.Password();
-          if (pass == "Pass")
+          if (pass == Password)
           {
             calendarLocked = false;
             MarkButton.Enabled = true;
             UnmarkButton.Enabled = true;
             activityPicker.Enabled = true;
+            personContextMenu.Enabled = true;
+            calendarContextMenu.Enabled = true;
             lockButton.Image = Resources.lock1600;
             break;
           }
