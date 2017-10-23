@@ -542,14 +542,14 @@ namespace Thy_El_Teknik_Kalender_9000
       }
     }
 
-    private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
+    private void calendarGrid_CellClick(object sender, DataGridViewCellEventArgs e)
     {
       personDataGrid.ClearSelection();
       Console.WriteLine("Number of cells you have chosen:");
       Console.WriteLine(calendarDataGird.SelectedCells.Count);
     }
 
-    private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+    private void calendarGrid_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
     {
       Color backcolor =
         calendarDataGird[e.ColumnIndex, e.RowIndex].Style.BackColor;
@@ -560,17 +560,17 @@ namespace Thy_El_Teknik_Kalender_9000
         MarkSelected((Activity.activityType)activityPicker.SelectedItem);
     }
 
-    private void dataGridView2_Click(object sender, EventArgs e)
+    private void personGrid_Click(object sender, EventArgs e)
     {
       calendarDataGird.ClearSelection();
     }
 
-    private void dataGridView2_CellDoubleClick(object sender, EventArgs e)
+    private void personGrid_CellDoubleClick(object sender, EventArgs e)
     {
       personDataGrid.BeginEdit(false);
     }
 
-    private void dataGridView2_KeyDown(object sender, KeyEventArgs e)
+    private void personGrid_KeyDown(object sender, KeyEventArgs e)
     {
       HotkeyDetection(sender, e);
       if (!personDataGrid.IsCurrentCellInEditMode)
@@ -686,6 +686,7 @@ namespace Thy_El_Teknik_Kalender_9000
       config.Disposed += (object s, EventArgs ev) =>
       {
         Activated -= evnthndlr;
+        SaveSettings(this, new FormClosingEventArgs(CloseReason.UserClosing, false));
         UpdateCalendarContent();
       };
 
@@ -732,7 +733,7 @@ namespace Thy_El_Teknik_Kalender_9000
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    private void dataGridView2_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+    private void personGrid_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
     {
       if (personDataGrid.ContainsFocus
         && e.RowIndex == personDataGrid.RowCount - 1)
@@ -778,7 +779,7 @@ namespace Thy_El_Teknik_Kalender_9000
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    private void dataGridView2_SelectionChanged(object sender, EventArgs e)
+    private void personGrid_SelectionChanged(object sender, EventArgs e)
     {
       if (personDataGrid.SelectedCells.Count > 0)
       {
@@ -794,11 +795,13 @@ namespace Thy_El_Teknik_Kalender_9000
       }
     }
 
-    private void dataGridView2_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
+    private void personGrid_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
     {
       if ((e.RowIndex == personDataGrid.RowCount - 1
         && e.ColumnIndex != 0) || e.RowIndex < 1)
+      {
         e.Cancel = true;
+      }
       if (e.RowIndex < personDataGrid.RowCount - 1 && e.RowIndex > 0)
       {
         string preName = (string)personDataGrid[0, e.RowIndex].Value;
@@ -832,7 +835,7 @@ namespace Thy_El_Teknik_Kalender_9000
       }
     }
 
-    private void dataGridView2_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
+    private void personGrid_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
     {
       FieldInfo field1 =
         typeof(DataGridView).GetField(
@@ -849,14 +852,14 @@ namespace Thy_El_Teknik_Kalender_9000
         calendarDataGird.Rows.RemoveAt(e.RowIndex);
     }
 
-    private void dataGridView1_Scroll(object sender, ScrollEventArgs e)
+    private void calendarGrid_Scroll(object sender, ScrollEventArgs e)
     {
       personDataGrid.FirstDisplayedScrollingRowIndex =
         calendarDataGird.FirstDisplayedScrollingRowIndex;
       calendarDataGird.Invalidate();
     }
 
-    private void dataGridView2_Scroll(object sender, ScrollEventArgs e)
+    private void personGrid_Scroll(object sender, ScrollEventArgs e)
     {
       calendarDataGird.FirstDisplayedScrollingRowIndex =
         personDataGrid.FirstDisplayedScrollingRowIndex;
@@ -866,7 +869,7 @@ namespace Thy_El_Teknik_Kalender_9000
 
     #region Grid1 paint
     //Custom paint event to paint header weeknumber and dates in daterow
-    private void dataGridView1_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+    private void calendarGrid_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
     {
       //For header
       if (e.RowIndex == -1)

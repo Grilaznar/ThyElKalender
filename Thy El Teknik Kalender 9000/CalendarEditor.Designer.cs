@@ -79,10 +79,10 @@
       this.calendarDataGird.RowHeadersVisible = false;
       this.calendarDataGird.Size = new System.Drawing.Size(501, 335);
       this.calendarDataGird.TabIndex = 10;
-      this.calendarDataGird.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
-      this.calendarDataGird.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellDoubleClick);
-      this.calendarDataGird.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dataGridView1_CellPainting);
-      this.calendarDataGird.Scroll += new System.Windows.Forms.ScrollEventHandler(this.dataGridView1_Scroll);
+      this.calendarDataGird.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.calendarGrid_CellClick);
+      this.calendarDataGird.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.calendarGrid_CellDoubleClick);
+      this.calendarDataGird.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.calendarGrid_CellPainting);
+      this.calendarDataGird.Scroll += new System.Windows.Forms.ScrollEventHandler(this.calendarGrid_Scroll);
       this.calendarDataGird.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HotkeyDetection);
       // 
       // calendarContextMenu
@@ -130,14 +130,14 @@
       this.personDataGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
       this.personDataGrid.Size = new System.Drawing.Size(218, 335);
       this.personDataGrid.TabIndex = 9;
-      this.personDataGrid.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dataGridView2_CellBeginEdit);
-      this.personDataGrid.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridView2_RowsAdded);
-      this.personDataGrid.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dataGridView2_RowsRemoved);
-      this.personDataGrid.Scroll += new System.Windows.Forms.ScrollEventHandler(this.dataGridView2_Scroll);
-      this.personDataGrid.SelectionChanged += new System.EventHandler(this.dataGridView2_SelectionChanged);
-      this.personDataGrid.Click += new System.EventHandler(this.dataGridView2_Click);
-      this.personDataGrid.DoubleClick += new System.EventHandler(this.dataGridView2_CellDoubleClick);
-      this.personDataGrid.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dataGridView2_KeyDown);
+      this.personDataGrid.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.personGrid_CellBeginEdit);
+      this.personDataGrid.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.personGrid_RowsAdded);
+      this.personDataGrid.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.personGrid_RowsRemoved);
+      this.personDataGrid.Scroll += new System.Windows.Forms.ScrollEventHandler(this.personGrid_Scroll);
+      this.personDataGrid.SelectionChanged += new System.EventHandler(this.personGrid_SelectionChanged);
+      this.personDataGrid.Click += new System.EventHandler(this.personGrid_Click);
+      this.personDataGrid.DoubleClick += new System.EventHandler(this.personGrid_CellDoubleClick);
+      this.personDataGrid.KeyDown += new System.Windows.Forms.KeyEventHandler(this.personGrid_KeyDown);
       // 
       // personContextMenu
       // 
